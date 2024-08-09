@@ -1,3 +1,4 @@
+import { ThemeToggle } from '@theme/theme-toggle'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
@@ -26,20 +27,23 @@ export function SignUp() {
       console.log(data)
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
-      toast.success('Restaurante cadastrado com sucesso', {
+      toast.success('Usuário cadastrado com sucesso', {
         action: {
           label: 'Login',
           onClick: () => navigate('/sign-in'),
         },
       })
     } catch (error) {
-      toast.error('Erro ao cadastrar restaurante')
+      toast.error('Erro ao cadastrar usuário')
     }
   }
 
   return (
     <>
       <Helmet title="Cadastrar-se" />
+      <div className="absolute bottom-5 right-5">
+        <ThemeToggle />
+      </div>
       <div className="p-8">
         <Button variant={'ghost'} asChild className="absolute right-8 top-8">
           <Link to="/sign-in">Fazer Login</Link>
@@ -47,15 +51,15 @@ export function SignUp() {
         <div className="flex w-[350px] flex-col justify-center gap-6">
           <div className="flex- flex-col justify-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tighter">
-              Criar conta grátis
+              Criar conta
             </h1>
             <p className="font-sm text-muted-foreground">
-              Seja um parceiro e comece as vendas
+              Crie sua conta para ter acesso a tudo que nosso Portal oferece
             </p>
           </div>
           <form onSubmit={handleSubmit(handleSignUp)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="restaurantName">Nome do estabelcimento</Label>
+              <Label htmlFor="restaurantName">Código SOC</Label>
               <Input
                 id="restaurantName"
                 type="text"
@@ -63,7 +67,7 @@ export function SignUp() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="managerName">Seu Nome</Label>
+              <Label htmlFor="managerName">CPF ou CNPJ</Label>
               <Input
                 autoCapitalize="words"
                 id="managerName"
@@ -72,11 +76,11 @@ export function SignUp() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Seu e-mail</Label>
+              <Label htmlFor="email">Usuário</Label>
               <Input id="email" type="email" {...register('email')} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Seu celular</Label>
+              <Label htmlFor="phone">Senha</Label>
               <Input id="phone" type="text" {...register('phone')} />
             </div>
 

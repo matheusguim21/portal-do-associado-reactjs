@@ -1,3 +1,4 @@
+import { ForgotPassword } from '@pages/auth/forgot--password'
 import { createBrowserRouter } from 'react-router-dom'
 
 import { Applayout } from './pages/_layouts/app'
@@ -5,7 +6,7 @@ import { Authlayout } from './pages/_layouts/auth'
 import { Dashboard } from './pages/app/dashboard'
 import { SignIn } from './pages/auth/sign-in'
 import { SignUp } from './pages/auth/sign-up'
-import { Obras } from './pages/obras/obras'
+import { Obras } from './pages/obras/consulta'
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: '/sign-up',
         element: <SignUp />,
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPassword />,
       },
     ],
   },

@@ -1,5 +1,6 @@
 import '@/global.css'
 
+import { colors } from '@theme/colors'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { RouterProvider } from 'react-router-dom'
 import { Toaster } from 'sonner'
@@ -12,7 +13,16 @@ export function App() {
   return (
     <HelmetProvider>
       <ThemeProvider>
-        <Toaster richColors />
+        <Toaster
+          visibleToasts={3}
+          toastOptions={{
+            classNames: {
+              toast: 'bg-primary ',
+              title: 'text-muted',
+              icon: 'fill-muted',
+            },
+          }}
+        />
         <Helmet titleTemplate="%s | SOCINPRO" />
         <RouterProvider router={router} />
       </ThemeProvider>

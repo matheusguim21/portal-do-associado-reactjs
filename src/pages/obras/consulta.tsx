@@ -7,7 +7,9 @@ export function Obras() {
       <Helmet title="Obras" />
 
       <div>
-        <h1 className="trac text-3xl font-semibold tracking-tighter">Obras</h1>
+        <h1 className="trac text-3xl font-semibold tracking-tighter">
+          Consulta de Obras
+        </h1>
       </div>
 
       <div className="space-y-2.5">

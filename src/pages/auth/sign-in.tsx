@@ -1,3 +1,16 @@
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@components/ui/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ThemeToggle } from '@theme/theme-toggle'
+import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
@@ -9,25 +22,41 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 const signinFormSchema = z.object({
-  email: z.string().email('Digite um e-mail válido'),
+  username: z
+    .string({
+      message: 'Insira um usuário',
+    })
+    .min(1, { message: 'Insira um usuário' }),
+  password: z
+    .string({
+      message: 'Insira a sua senha',
+    })
+    .min(8, 'A senha têm no mínimo 8 caractéres')
+    .max(16, 'A senha têm no máximo 16 caracteres')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\S]*$/, {
+      message:
+        'A senha deve conter pelo menos um carácter maiúsculo, um minúsculo e um número',
+    }),
 })
 
 type FormDataProps = z.infer<typeof signinFormSchema>
 
 export function SignIn() {
-  const { formState, register, handleSubmit } = useForm<FormDataProps>()
+  const form = useForm<FormDataProps>({
+    resolver: zodResolver(signinFormSchema),
+    defaultValues: {
+      password: '',
+    },
+  })
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   async function handleSignIn(data: FormDataProps) {
     try {
       console.log(data)
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
-      toast.success('Enviamos um link de autenticação para o seu e-mail', {
-        action: {
-          label: 'Reenviar',
-          onClick: () => handleSignIn(data),
-        },
-      })
+      toast.success('Lofin efetuado com sucesso', {})
     } catch (error) {
       toast.error('E-mail inválido')
     }
@@ -36,32 +65,101 @@ export function SignIn() {
   return (
     <>
       <Helmet title="Login" />
+      <div className="absolute bottom-5 right-5">
+        <ThemeToggle />
+      </div>
       <div className="p-8">
         <Button variant="ghost" asChild className="absolute right-8 top-8">
-          <Link to={'/sign-up'}>Novo Estabelecimento</Link>
+          <Link to={'/sign-up'}>Primeiro acesso</Link>
         </Button>
         <div className="flex w-[350px] flex-col justify-center gap-6">
           <div className="flex- flex-col justify-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tighter">
-              Acessar Painel
+              Acessar Portal do Associado
             </h1>
-            <p className="font-sm text-muted-foreground">
-              Acompanhe suas vendas pelo painel do parceiro
+            <p className="text-sm text-muted-foreground">
+              Cosulte suas obras, fonogramas, rendimentos e muito mais
             </p>
           </div>
-          <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Seu e-mail</Label>
-              <Input id="email" type="email" {...register('email')} />
-            </div>
-            <Button
-              disabled={formState.isSubmitting}
-              className="w-full"
-              type="submit"
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSignIn)}
+              className="space-y-4"
             >
-              Acessar Painel
-            </Button>
-          </form>
+              <FormField
+                name="username"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Seu usuário</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        {...field}
+                        placeholder="Digite seu usuário aqui"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                    <FormDescription>
+                      É o nome de usuário que você recebeu por e-mail
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sua senha</FormLabel>
+                    <FormControl>
+                      <div className="flex h-10 w-full items-center rounded-md border border-primary bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-within:border-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <Input
+                          className="h-5 w-full border-none px-0 focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+                          type={isPasswordVisible ? 'text' : 'password'}
+                          placeholder="Digite sua senha aqui"
+                          {...field}
+                        />
+                        {isPasswordVisible ? (
+                          <EyeOff
+                            onClick={() =>
+                              setIsPasswordVisible(!isPasswordVisible)
+                            }
+                          />
+                        ) : (
+                          <Eye
+                            onClick={() =>
+                              setIsPasswordVisible(!isPasswordVisible)
+                            }
+                          />
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                    <FormDescription>
+                      É a senha que você recebeu em seu e-mail
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                variant={'default'}
+                disabled={
+                  form.formState.isSubmitting || !form.formState.isValid
+                }
+                className="w-full"
+                type="submit"
+              >
+                Acessar Portal
+              </Button>
+
+              <Button type="button" variant={'link'} asChild>
+                <Link to={'/forgot-password'}>Esqueci a senha</Link>
+              </Button>
+            </form>
+          </Form>
         </div>
       </div>
     </>

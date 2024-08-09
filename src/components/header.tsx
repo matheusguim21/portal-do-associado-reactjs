@@ -9,8 +9,8 @@ import {
   UtensilsCrossed,
 } from 'lucide-react'
 
-import LogoSocinproBranca from '@/assets/logo-sem-slogan-branca.png'
-import LogoSocinproPreta from '@/assets/logo-sem-slogan-preta.png'
+import LogoSocinproBranca from '@/assets/logos/logo-sem-slogan-branca.png'
+import LogoSocinproPreta from '@/assets/logos/logo-sem-slogan-preta.png'
 import { useTheme } from '@/theme/theme-provider'
 import { ThemeToggle } from '@/theme/theme-toggle'
 

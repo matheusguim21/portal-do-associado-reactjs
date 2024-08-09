@@ -23,7 +23,7 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 export function ThemeProvider({
   children,
   defaultTheme = 'system',
-  storageKey = 'pizza-shop-theme',
+  storageKey = 'portal-socinpro',
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
