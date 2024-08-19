@@ -9,6 +9,7 @@ import {
 } from '@components/ui/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ThemeToggle } from '@theme/theme-toggle'
+import { AxiosError } from 'axios'
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
@@ -20,6 +21,11 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { api } from '@/utils/api'
+
+type RequestError = {
+  message: string
+}
 
 const signinFormSchema = z.object({
   username: z
@@ -55,10 +61,18 @@ export function SignIn() {
     try {
       console.log(data)
 
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      toast.success('Lofin efetuado com sucesso', {})
-    } catch (error) {
-      toast.error('E-mail inválido')
+      api.post('/login', {
+        username: data.username,
+        password: data.password,
+      })
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.message)
+      }
+
+      toast.error(
+        'Não foi possível recuperar a sua senha tente novamente mais tarde',
+      )
     }
   }
 
@@ -69,16 +83,16 @@ export function SignIn() {
         <ThemeToggle />
       </div>
       <div className="p-8">
-        <Button variant="ghost" asChild className="absolute right-8 top-8">
+        {/* <Button variant="ghost" asChild className="absolute right-8 top-8">
           <Link to={'/sign-up'}>Primeiro acesso</Link>
-        </Button>
+        </Button> */}
         <div className="flex w-[350px] flex-col justify-center gap-6">
           <div className="flex- flex-col justify-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tighter">
               Acessar Portal do Associado
             </h1>
             <p className="text-sm text-muted-foreground">
-              Cosulte suas obras, fonogramas, rendimentos e muito mais
+              Cosulte suas obras, fonogramas, rendimentos e muito mais.
             </p>
           </div>
           <Form {...form}>
@@ -147,18 +161,19 @@ export function SignIn() {
               <Button
                 variant={'default'}
                 disabled={
-                  form.formState.isSubmitting || !form.formState.isValid
+                  form.formState.isSubmitting ||
+                  form.getValues().password.length < 1 ||
+                  form.getValues().username.length < 1
                 }
                 className="w-full"
                 type="submit"
               >
                 Acessar Portal
               </Button>
-
-              <Button type="button" variant={'link'} asChild>
-                <Link to={'/forgot-password'}>Esqueci a senha</Link>
-              </Button>
             </form>
+            <Button type="button" className="px-0" variant={'link'} asChild>
+              <Link to={'/esqueceu-senha'}>Esqueci a senha</Link>
+            </Button>
           </Form>
         </div>
       </div>

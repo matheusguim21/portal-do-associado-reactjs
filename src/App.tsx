@@ -1,5 +1,6 @@
 import '@/global.css'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { colors } from '@theme/colors'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { RouterProvider } from 'react-router-dom'
@@ -10,22 +11,26 @@ import { router } from './routes'
 import { ThemeProvider } from './theme/theme-provider'
 
 export function App() {
+  const queryClient = new QueryClient()
+
   return (
     <HelmetProvider>
-      <ThemeProvider>
-        <Toaster
-          visibleToasts={3}
-          toastOptions={{
-            classNames: {
-              toast: 'bg-primary ',
-              title: 'text-muted',
-              icon: 'fill-muted',
-            },
-          }}
-        />
-        <Helmet titleTemplate="%s | SOCINPRO" />
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <Toaster
+            visibleToasts={3}
+            toastOptions={{
+              classNames: {
+                toast: 'bg-primary ',
+                title: 'text-muted',
+                icon: 'fill-muted',
+              },
+            }}
+          />
+          <Helmet titleTemplate="%s | SOCINPRO" />
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </QueryClientProvider>
     </HelmetProvider>
   )
 }
