@@ -2,6 +2,8 @@ import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import { ChevronDown, LogOut, User } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { useTitularStore } from '@/store/titularStore'
+
 import { Button } from './ui/button'
 import {
   DropdownMenu,
@@ -12,6 +14,7 @@ import {
 } from './ui/dropdown-menu'
 
 export function AccountMenu() {
+  const { titular } = useTitularStore()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -19,16 +22,20 @@ export function AccountMenu() {
           variant={'outline'}
           className="flex select-none items-center gap-2"
         >
-          Matheus de Guaratiba
+          {
+            titular?.titularPseudonimos?.find(
+              (pseudonimo) => pseudonimo.principal === 'S',
+            )?.pseudonimo
+          }
           <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col">
-          <span>Matheus Cirino Guimarães de Pinho</span>
+          <span>{titular?.nome}</span>
           <span className="text-sm font-normal text-muted-foreground">
-            matheusdeguaratiba@gmail.com
+            emaildotitular@gmail.com
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
