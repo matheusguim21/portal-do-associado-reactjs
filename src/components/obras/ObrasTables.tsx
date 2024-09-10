@@ -1,7 +1,3 @@
-import dayjs from 'dayjs'
-
-import { Obra } from '@/models/Obra'
-
 import {
   Table,
   TableBody,
@@ -10,7 +6,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './ui/table'
+} from '@components/ui/table'
+import dayjs from 'dayjs'
+
+import { Obra } from '@/models/Obra'
 
 interface RequestObrasTable {
   obras: Obra[]

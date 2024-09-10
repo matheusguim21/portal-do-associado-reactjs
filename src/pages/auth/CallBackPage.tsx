@@ -21,7 +21,7 @@ const CallbackPage: React.FC = () => {
 
       if (authorizationCode && state) {
         const tokenEndpoint =
-          'https://homolog-auth.socinpro.org.br:8443/sipa-auth/oauth2/token'
+          'https://auth-sipa-stag.socinpro.org.br/sipa-auth/oauth2/token'
         const clientId = 'sipa-associado'
         const clientSecret = 'web123'
         const redirectUri = 'http://127.0.0.1:3000/auth/callback'

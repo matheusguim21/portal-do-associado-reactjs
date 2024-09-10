@@ -84,7 +84,7 @@ export function OAuthLogin() {
     const clientId = 'sipa-associado'
     const redirectUri = 'http://127.0.0.1:3000/auth/callback'
     const authEndpoint =
-      'https://homolog-auth.socinpro.org.br:8443/sipa-auth/oauth2/authorize'
+      'https://auth-sipa-stag.socinpro.org.br/sipa-auth/oauth2/authorize'
     const responseType = 'code'
 
     const url = `${authEndpoint}?response_type=${responseType}&client_id=${clientId}&state=${authState.state}&code_challenge=${authState.codeChallenge}&code_challenge_method=S256&scope=READ+WRITE&redirect_uri=${encodeURIComponent(redirectUri)}`
