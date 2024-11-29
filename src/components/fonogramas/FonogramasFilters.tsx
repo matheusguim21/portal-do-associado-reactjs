@@ -9,17 +9,17 @@ import { RequestObra } from '@pages/obras/consulta'
 import { Search } from 'lucide-react'
 import { UseFormReturn } from 'react-hook-form'
 
-interface ObrasFiltersProps {
+interface FonogramasFiltersProps {
   form: UseFormReturn<RequestObra>
   isFetching: boolean
   handleFunction: (formParams: RequestObra) => Promise<void>
 }
 
-export function ObrasFilters({
+export function FonogramasFilters({
   form,
   handleFunction,
   isFetching,
-}: ObrasFiltersProps) {
+}: FonogramasFiltersProps) {
   return (
     <Form {...form}>
       <span className="text-lg font-semibold">Filtros:</span>
@@ -27,7 +27,7 @@ export function ObrasFilters({
         onSubmit={form.handleSubmit(handleFunction)}
         className="flex w-[70rem] flex-col flex-wrap items-start gap-3"
       >
-        <div className="flex flex-wrap items-end gap-5">
+        <div className="flex flex-wrap items-end gap-3">
           <FormField
             control={form.control}
             name="minhasObras"
@@ -42,30 +42,27 @@ export function ObrasFilters({
               </FormItem>
             )}
           />
-          <div className="flex">
-            <Label className="mr-2">Nacional:</Label>
-            <FormField
-              control={form.control}
-              name="nacional"
-              render={({ field }) => (
-                <RadioGroup
-                  className="flex items-center"
-                  defaultValue="S"
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor="sim">Sim</Label>
-                    <RadioGroupItem id="sim" value="S" />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor="nao">Não</Label>
-                    <RadioGroupItem id="nao" value="N" />
-                  </div>
-                </RadioGroup>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="nacional"
+            render={({ field }) => (
+              <RadioGroup
+                className="flex items-center"
+                defaultValue="S"
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="sim">Sim</Label>
+                  <RadioGroupItem id="sim" value="S" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="nao">Não</Label>
+                  <RadioGroupItem id="nao" value="N" />
+                </div>
+              </RadioGroup>
+            )}
+          />
         </div>
 
         <div className="flex flex-wrap gap-3">

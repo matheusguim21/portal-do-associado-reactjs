@@ -9,24 +9,24 @@ import {
 } from '@components/ui/table'
 import dayjs from 'dayjs'
 
-import { Obra } from '@/models/Obra'
+import { Fonograma } from '@/models/Fonograma'
 
-interface RequestObrasTable {
-  obras: Obra[]
+interface RequestFonogramasTable {
+  fonogramas: Fonograma[]
 }
 
-export function ObrasTable({ obras }: RequestObrasTable) {
+export function FonogramasTable({ fonogramas }: RequestFonogramasTable) {
   return (
     <>
       <Table className="caption-top rounded border-foreground bg-none">
-        <TableCaption>Resultado da pesquisa de Obras</TableCaption>
+        <TableCaption>Resultado da pesquisa de Fonogramas</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead></TableHead>
             <TableHead className="text-primary">Id</TableHead>
             <TableHead className="text-primary">Título</TableHead>
             <TableHead className="text-primary">Código ECAD</TableHead>
-            <TableHead className="text-primary">ISWC</TableHead>
+            <TableHead className="text-primary">ISRC</TableHead>
             <TableHead className="text-primary">Data de Registro</TableHead>
             <TableHead className="text-primary">Status</TableHead>
             <TableHead className="text-primary">Nacional</TableHead>
@@ -36,23 +36,23 @@ export function ObrasTable({ obras }: RequestObrasTable) {
           </TableRow>
         </TableHeader>
         <TableBody className="text-muted-foreground">
-          {obras.map((obra) => (
-            <TableRow key={obra.id}>
+          {fonogramas.map((fonograma) => (
+            <TableRow key={fonograma.id}>
               <TableCell></TableCell>
-              <TableCell>{obra.id}</TableCell>
-              <TableCell>{obra.titulo}</TableCell>
-              <TableCell>{obra.codigoEcad}</TableCell>
-              <TableCell>{obra.iswc}</TableCell>
+              <TableCell>{fonograma.id}</TableCell>
+              <TableCell>{fonograma.titulo}</TableCell>
+              <TableCell>{fonograma.codigoEcad}</TableCell>
+              <TableCell>{fonograma.iswc}</TableCell>
               <TableCell>
-                {obra.dtRegistro != null
-                  ? dayjs(obra.dtRegistro).format('DD/MM/YYYY')
+                {fonograma.dtRegistro != null
+                  ? dayjs(fonograma.dtRegistro).format('DD/MM/YYYY')
                   : 'Sem data'}
               </TableCell>
-              <TableCell>{obra.status}</TableCell>
-              <TableCell>{obra.nacional}</TableCell>
-              <TableCell>{obra.situacaoCadastral.descricao}</TableCell>
-              <TableCell>{obra.dominioPublico}</TableCell>
-              <TableCell>{obra.instrumental}</TableCell>
+              <TableCell>{fonograma.status}</TableCell>
+              <TableCell>{fonograma.nacional}</TableCell>
+              <TableCell>{fonograma.situacaoCadastral.descricao}</TableCell>
+              <TableCell>{fonograma.dominioPublico}</TableCell>
+              <TableCell>{fonograma.instrumental}</TableCell>
             </TableRow>
           ))}
         </TableBody>

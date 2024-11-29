@@ -1,27 +1,11 @@
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@components/ui/form'
 import { ThemeToggle } from '@theme/theme-toggle'
 import { generateCodeChallenge, generateState } from '@utils/AuthUtils'
-import { AxiosError } from 'axios'
-import { Eye, EyeOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router-dom'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useTitularStore } from '@/store/titularStore'
-import { api } from '@/utils/api'
 type RequestError = {
   message: string
 }
@@ -84,7 +68,7 @@ export function OAuthLogin() {
     const clientId = 'sipa-associado'
     const redirectUri = 'http://127.0.0.1:3000/auth/callback'
     const authEndpoint =
-      'https://auth-sipa-stag.socinpro.org.br/sipa-auth/oauth2/authorize'
+      'https://staging-auth.socinpro.org.br/sipa-auth/oauth2/authorize'
     const responseType = 'code'
 
     const url = `${authEndpoint}?response_type=${responseType}&client_id=${clientId}&state=${authState.state}&code_challenge=${authState.codeChallenge}&code_challenge_method=S256&scope=READ+WRITE&redirect_uri=${encodeURIComponent(redirectUri)}`

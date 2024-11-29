@@ -1,21 +1,22 @@
 import { RequestObra } from '@pages/obras/consulta'
 
+import { Fonograma } from '@/models/Fonograma'
 import { Obra } from '@/models/Obra'
 import { useTitularStore } from '@/store/titularStore'
 import { api } from '@/utils/api'
 
-export type ResponseObra = {
-  content: Obra[]
+export type ResponseFonograma = {
+  content: Fonograma[]
   size: number
   totalElements: number
   totalPages: number
   number: number
 }
 
-export async function fetchObras(
+export async function fetchFonogramas(
   obra: RequestObra,
   pageIndex: number,
-): Promise<ResponseObra> {
+): Promise<ResponseFonograma> {
   const queryParams = new URLSearchParams({
     titulo: obra.titulo || '',
     titularNome: obra.titularNome || '',

@@ -1,5 +1,5 @@
-import { ObrasFilters } from '@components/obras/obrasFilters'
-import { ObrasTable } from '@components/obras/ObrasTables'
+import { FonogramasFilters } from '@components/fonogramas/FonogramasFilters'
+import { FonogramasTable } from '@components/fonogramas/FonogramasTables'
 import { Pagination } from '@components/pagination'
 import { Button } from '@components/ui/button'
 import { Form, FormField, FormItem } from '@components/ui/form'
@@ -15,13 +15,16 @@ import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z, ZodError } from 'zod'
 
-import { Obra } from '@/models/Obra'
-import { fetchObras, ResponseObra } from '@/services/ObrasService'
+import { Fonograma } from '@/models/Fonograma'
+import {
+  fetchFonogramas,
+  ResponseFonograma,
+} from '@/services/fonogramasService'
 import { useTitularStore } from '@/store/titularStore'
 import { api } from '@/utils/api'
 
 // Definição do esquema de validação usando Zod
-const ObraSchema = z
+const FonogramaSchema = z
   .object({
     id: z.string().optional(),
     titulo: z.string().optional(),
@@ -30,7 +33,7 @@ const ObraSchema = z
     codigoEcad: z.string().optional(),
     titularNome: z.string().optional(),
     titularPseudonimo: z.string().optional(),
-    minhasObras: z.boolean().default(true),
+    minhasFonogramas: z.boolean().default(true),
     nacional: z.string().default('S'),
   })
   .superRefine((data, ctx) => {
@@ -45,30 +48,30 @@ const ObraSchema = z
 
     // Verificação se há pelo menos dois campos preenchidos
     const filledValues = values.filter((value) => value && value.trim() !== '')
-    data.minhasObras &&
+    data.minhasFonogramas &&
       (data.titularId = useTitularStore.getState().titular?.id.toString())
-    if (filledValues.length < 2 && !data.minhasObras) {
+    if (filledValues.length < 2 && !data.minhasFonogramas) {
       ctx.addIssue({
         code: 'custom',
         path: ['fieldsValidation'],
         message:
-          'Você precisa preencher pelo menos dois campos para fazer a pesquisa se minhas obras estiver desmarcado',
+          'Você precisa preencher pelo menos dois campos para fazer a pesquisa se minhas Fonogramas estiver desmarcado',
       })
     }
   })
 
-export type RequestObra = z.infer<typeof ObraSchema>
+export type RequestFonograma = z.infer<typeof FonogramaSchema>
 
 // Defina o tipo personalizado de erros
-type CustomFormErrors = FieldErrors<RequestObra> & {
+type CustomFormErrors = FieldErrors<RequestFonograma> & {
   fieldsValidation?: {
     message: string
   }
 }
 
-export function ConsultaDeObras() {
-  const form = useForm<RequestObra>({
-    resolver: zodResolver(ObraSchema), // Integrando o schema de validação
+export function ConsultaDeFonogramas() {
+  const form = useForm<RequestFonograma>({
+    resolver: zodResolver(FonogramaSchema), // Integrando o schema de validação
     defaultValues: {
       titulo: '',
       codigoEcad: '',
@@ -77,7 +80,7 @@ export function ConsultaDeObras() {
       titularId: '',
       titularNome: '',
       titularPseudonimo: '',
-      minhasObras: true,
+      minhasFonogramas: true,
     },
   })
   const [searchParams, setSearchParams] = useSearchParams()
@@ -88,15 +91,15 @@ export function ConsultaDeObras() {
     .parse(searchParams.get('page') ?? '1')
 
   const { data, isError, isFetching, refetch } = useQuery<
-    ResponseObra,
+    ResponseFonograma,
     AxiosError
   >({
-    queryKey: ['pesquisa-obras', pageIndex], // Usar form.watch() para observar mudanças
-    queryFn: () => fetchObras(form.getValues(), pageIndex), // A função fetch será executada com os valores do formulário
+    queryKey: ['pesquisa-fonogramas', pageIndex], // Usar form.watch() para observar mudanças
+    queryFn: () => fetchFonogramas(form.getValues(), pageIndex), // A função fetch será executada com os valores do formulário
     // Não buscar automaticamente
   })
 
-  const handleObrasSearch = async (formParams: RequestObra) => {
+  const handleFonogramasSearch = async (formParams: RequestFonograma) => {
     try {
       console.log('Parâmetros: ', formParams)
 
@@ -126,22 +129,22 @@ export function ConsultaDeObras() {
 
   return (
     <>
-      <Helmet title="Obras" />
+      <Helmet title="Fonogramas" />
 
       <div>
         <h1 className="trac text-3xl font-semibold tracking-tighter">
-          Consulta de Obras
+          Consulta de Fonogramas
         </h1>
       </div>
 
       <div className="max-w-max space-y-2 p-5">
-        <ObrasFilters
+        <FonogramasFilters
           form={form}
-          handleFunction={handleObrasSearch}
+          handleFunction={handleFonogramasSearch}
           isFetching={isFetching}
         />
         <div className="rounded-md border">
-          {data != null ? <ObrasTable obras={data.content} /> : null}
+          {data != null ? <FonogramasTable Fonogramas={data.content} /> : null}
         </div>
         {data ? (
           <Pagination
