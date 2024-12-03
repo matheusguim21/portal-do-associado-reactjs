@@ -38,7 +38,7 @@ export function OAuthLogin() {
   const { saveCodeVerifier } = useTitularStore()
 
   useEffect(() => {
-    ; (async () => {
+    ;(async () => {
       try {
         const { codeVerifier, codeChallenge } = await generateCodeChallenge()
         const state = generateState()

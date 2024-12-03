@@ -6,6 +6,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    proxy: {
+      '/sipa-documentacao': {
+        target: 'https://staging-auth.socinpro.org.br',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   resolve: {
     alias: {
