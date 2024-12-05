@@ -1,6 +1,7 @@
-import { ObrasFilters } from '@components/obras/obrasFilters'
-import { ObrasTable } from '@components/obras/ObrasTables'
+import { ObrasFilters } from '@components/filters/obrasFilters'
 import { Pagination } from '@components/pagination'
+import { SkeletonTable } from '@components/skeletons/table-skeleton'
+import { ObrasTable } from '@components/tables/ObrasTables'
 import { Button } from '@components/ui/button'
 import { Form, FormField, FormItem } from '@components/ui/form'
 import { Input } from '@components/ui/input'
@@ -13,7 +14,7 @@ import { Helmet } from 'react-helmet-async'
 import { FieldErrors, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { z, ZodError } from 'zod'
+import { z } from 'zod'
 
 import { Obra } from '@/models/Obra'
 import { fetchObras, ResponseObra } from '@/services/ObrasService'
@@ -47,7 +48,7 @@ const ObraSchema = z
     const filledValues = values.filter((value) => value && value.trim() !== '')
     data.minhasObras &&
       (data.titularId = useTitularStore.getState().titular?.id.toString())
-    if (filledValues.length < 2 && !data.minhasObras) {
+    if (filledValues.length < 0 && !data.minhasObras) {
       ctx.addIssue({
         code: 'custom',
         path: ['fieldsValidation'],
@@ -99,10 +100,12 @@ export function ConsultaDeObras() {
   const handleObrasSearch = async (formParams: RequestObra) => {
     try {
       console.log('Parâmetros: ', formParams)
-
+      setSearchParams((state) => {
+        state.set('page', String(0))
+        return state
+      })
       await refetch() // Refetch ao submeter o formulário
       console.log('Resultado da pesquisa', data)
-      console.log('Token da API: ', api.defaults.headers.common.Authorization)
     } catch (error) {
       console.error(error)
     }
@@ -129,7 +132,7 @@ export function ConsultaDeObras() {
       <Helmet title="Obras" />
 
       <div>
-        <h1 className="trac text-3xl font-semibold tracking-tighter">
+        <h1 className="text-3xl font-semibold tracking-tighter">
           Consulta de Obras
         </h1>
       </div>
@@ -140,8 +143,12 @@ export function ConsultaDeObras() {
           handleFunction={handleObrasSearch}
           isFetching={isFetching}
         />
-        <div className="rounded-md border">
-          {data != null ? <ObrasTable obras={data.content} /> : null}
+        <div className="rounded-md shadow-sm shadow-muted-foreground">
+          {data != null ? (
+            <ObrasTable obras={data.content} />
+          ) : (
+            <SkeletonTable />
+          )}
         </div>
         {data ? (
           <Pagination

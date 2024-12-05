@@ -1,6 +1,7 @@
 import CallbackPage from '@pages/auth/CallBackPage'
 import { ForgotPassword } from '@pages/auth/forgot--password'
 import { OAuthLogin } from '@pages/auth/oauth-login'
+import { ConsultaDeFonogramas } from '@pages/fonogramas/consulta'
 import { createBrowserRouter } from 'react-router-dom'
 
 import { Applayout } from './pages/_layouts/app'
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: '/obras',
         element: <ConsultaDeObras />,
+      },
+      {
+        path: '/fonogramas',
+        element: <ConsultaDeFonogramas />,
       },
     ],
   },

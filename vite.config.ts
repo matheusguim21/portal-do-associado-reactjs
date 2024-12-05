@@ -10,7 +10,7 @@ export default defineConfig({
       '/sipa-documentacao': {
         target: 'https://staging-auth.socinpro.org.br',
         changeOrigin: true,
-        secure: false,
+        secure: false, // Desativar SSL strict (caso necessário)
       },
     },
   },

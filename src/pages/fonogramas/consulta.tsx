@@ -1,6 +1,6 @@
-import { FonogramasFilters } from '@components/fonogramas/FonogramasFilters'
-import { FonogramasTable } from '@components/fonogramas/FonogramasTables'
+import { FonogramasFilters } from '@components/filters/FonogramasFilters'
 import { Pagination } from '@components/pagination'
+import { FonogramasTable } from '@components/tables/FonogramasTables'
 import { Button } from '@components/ui/button'
 import { Form, FormField, FormItem } from '@components/ui/form'
 import { Input } from '@components/ui/input'
@@ -26,6 +26,7 @@ import { api } from '@/utils/api'
 // Definição do esquema de validação usando Zod
 const FonogramaSchema = z
   .object({
+    meusFonogramas: z.boolean(),
     id: z.string().optional(),
     titulo: z.string().optional(),
     titularId: z.string().optional(),
@@ -73,6 +74,7 @@ export function ConsultaDeFonogramas() {
   const form = useForm<RequestFonograma>({
     resolver: zodResolver(FonogramaSchema), // Integrando o schema de validação
     defaultValues: {
+      meusFonogramas: true,
       titulo: '',
       codigoEcad: '',
       id: '',
@@ -80,7 +82,6 @@ export function ConsultaDeFonogramas() {
       titularId: '',
       titularNome: '',
       titularPseudonimo: '',
-      minhasFonogramas: true,
     },
   })
   const [searchParams, setSearchParams] = useSearchParams()
@@ -143,9 +144,9 @@ export function ConsultaDeFonogramas() {
           handleFunction={handleFonogramasSearch}
           isFetching={isFetching}
         />
-        <div className="rounded-md border">
+        {/* <div className="rounded-md border">
           {data != null ? <FonogramasTable Fonogramas={data.content} /> : null}
-        </div>
+        </div> */}
         {data ? (
           <Pagination
             onPageChange={handlePaginate}

@@ -16,7 +16,7 @@ export async function fetchUsuarioInfo(token: string) {
     console.log('Id do titular', titular_id)
 
     const response = await api.get(
-      `http://127.0.0.1:8085/sipa-documentacao/v1/titulares/${titular_id}`,
+      `sipa-documentacao/v1/titulares/${titular_id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

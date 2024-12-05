@@ -25,10 +25,10 @@ export async function fetchObras(
     page: pageIndex.toString(),
   }).toString()
 
-  console.log('PArametros do Obra Srevice: ', obra)
+  console.log('PArametros do Obra Srevice: ', queryParams)
   const response = await api.get(
-    `http://127.0.0.1:8085/sipa-documentacao/v1/obras-musicais?pesquisa=CONTENDO&${queryParams}&sort=titulo,asc`,
+    `/sipa-documentacao/v1/obras-musicais?pesquisa=CONTENDO&${queryParams}&sort=titulo,asc${obra.minhasObras ? ',id,asc' : ''}`,
   )
-  console.log('resposta da requisição', response)
+  console.log('URL da requisição', response.config.url)
   return response.data
 }

@@ -1,3 +1,4 @@
+import { RequestTitular } from '@components/modals/titularSearchModal'
 import { Button } from '@components/ui/button'
 import {
   Form,
@@ -7,33 +8,32 @@ import {
   FormLabel,
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
-const TitularSchema = z.object({
-  pseudonimo: z.string(),
-  nome: z.string(),
-  codigoECAD: z.string(),
-  codigoSOC: z.string(),
-  cpf: z.string(),
-  codigoCAE: z.string(),
-  email: z.string(),
-})
-export type RequestTitular = z.infer<typeof TitularSchema>
-
-interface TitularFilterProps {
+interface TitularFiltersProps {
   form: UseFormReturn<RequestTitular>
   isFetching: boolean
   handleFunction: (formParams: RequestTitular) => Promise<void>
 }
 
-export function TitularFilters() {
-  const form = useForm<RequestTitular>()
-
+export function TitularFilters({
+  form,
+  handleFunction,
+  isFetching,
+}: TitularFiltersProps) {
+  useEffect(() => {
+    console.log('erros: ', form.formState.errors)
+  }, [form.formState.errors])
   return (
-    <div>
-      <Form {...form}>
-        <div className="flex flex-row items-center justify-center gap-4">
+    <Form {...form}>
+      <div className="flex flex-col justify-center gap-5">
+        <form
+          onSubmit={form.handleSubmit(handleFunction)}
+          className="flex flex-row items-center justify-center gap-4"
+        >
           <FormField
             control={form.control}
             name="nome"
@@ -106,11 +106,29 @@ export function TitularFilters() {
               </FormItem>
             )}
           />
-          <Button className="self-end" variant={'default'} type="submit">
+        </form>
+        <div className="flex w-full justify-end gap-4">
+          <Button
+            className="self-end"
+            variant={'destructive'}
+            type="reset"
+            onClick={() => {
+              console.log('Resetou')
+              form.reset()
+            }}
+          >
+            Limpar
+          </Button>
+          <Button
+            className="self-end"
+            variant={'default'}
+            type="submit"
+            onClick={form.handleSubmit(handleFunction)}
+          >
             Pesquisar
           </Button>
         </div>
-      </Form>
-    </div>
+      </div>
+    </Form>
   )
 }

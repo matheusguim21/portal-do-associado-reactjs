@@ -28,7 +28,7 @@ export async function fetchFonogramas(
 
   console.log('PArametros do Obra Srevice: ', obra)
   const response = await api.get(
-    `http://127.0.0.1:8085/sipa-documentacao/v1/obras-musicais?pesquisa=CONTENDO&${queryParams}&sort=titulo,asc`,
+    `/sipa-documentacao/v1/obras-musicais?pesquisa=CONTENDO&${queryParams}&sort=titulo,asc`,
   )
   console.log('resposta da requisição', response)
   return response.data

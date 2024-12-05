@@ -16,10 +16,17 @@ export interface Titular {
   cpfCnpj: string
   dataNascimento: string
   id: number
+  ipn: number
+  email: string
+  celular: string
+
   irrfInternacional: 'S' | 'N'
   nacional: 'S' | 'N'
   nacionalidade: Nacionalidade
   nome: string
+  situacaoCadastro: 'A'
+  telefone: string
+
   titularPseudonimos: Pseudonimo[] | null
   tipoPessoa: 'F' | 'J'
   tipoTitular: string

@@ -35,7 +35,7 @@ export function AccountMenu() {
         <DropdownMenuLabel className="flex flex-col">
           <span>{titular?.nome}</span>
           <span className="text-sm font-normal text-muted-foreground">
-            emaildotitular@gmail.com
+            {titular?.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
