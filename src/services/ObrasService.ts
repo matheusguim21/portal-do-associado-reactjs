@@ -1,16 +1,9 @@
 import { RequestObra } from '@pages/obras/consulta'
 
+import { ResponseObra } from '@/dtos/Obra'
 import { Obra } from '@/models/Obra'
 import { useTitularStore } from '@/store/titularStore'
 import { api } from '@/utils/api'
-
-export type ResponseObra = {
-  content: Obra[]
-  size: number
-  totalElements: number
-  totalPages: number
-  number: number
-}
 
 export async function fetchObras(
   obra: RequestObra,
@@ -22,6 +15,8 @@ export async function fetchObras(
     titularId: obra.minhasObras
       ? useTitularStore.getState().titular!.id.toString()
       : '',
+
+    nacional: obra.nacional || 'S',
     page: pageIndex.toString(),
   }).toString()
 

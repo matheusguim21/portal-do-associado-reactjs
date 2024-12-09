@@ -1,3 +1,4 @@
+import { SkeletonTable } from '@components/skeletons/table-skeleton'
 import { TitularTable } from '@components/tables/TitularTables'
 import { Button } from '@components/ui/button'
 import { Dialog, DialogContent, DialogHeader } from '@components/ui/dialog'
@@ -10,7 +11,10 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { UserSearch } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
+
+import { titularService } from '@/services/TitularService'
 
 import { TitularFilters } from '../filters/titularFilters'
 
@@ -30,11 +34,23 @@ export function TitularSearchModal() {
     resolver: zodResolver(TitularSchema),
   })
 
-  function handleSubmit(values: RequestTitular) {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const pageIndex = z.coerce
+    .number()
+    .transform((page) => page - 1)
+    .parse(searchParams.get('page') ?? '1')
+
+  const { data, isFetching, isError, refetch, isLoading } = useQuery({
+    queryKey: ['pesquisa-titular', form.getValues(), pageIndex],
+    enabled: false,
+    ...titularService.searchTitular,
+  })
+  const handletitularSearch = async (values: RequestTitular) => {
     console.log(values)
+    await refetch()
   }
 
-  const { data, isFetching, isError } = useQuery({})
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -47,7 +63,7 @@ export function TitularSearchModal() {
           <span className="text-sm text-white">Selecionar Titular</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-fit">
+      <DialogContent className="min-w-[80vw] max-w-fit">
         <DialogHeader>
           <DialogTitle className="font-bold text-foreground">
             Buscar titular do fonograma
@@ -61,11 +77,11 @@ export function TitularSearchModal() {
         <div className="flex min-w-[20rem] flex-row">
           <TitularFilters
             form={form}
-            handleFunction={handleSubmit}
+            handleFunction={handletitularSearch}
             isFetching={isFetching}
           />
         </div>
-        <TitularTable />
+        {data != null ? <TitularTable titulares={data.content} /> : null}
       </DialogContent>
     </Dialog>
   )

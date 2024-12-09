@@ -12,10 +12,10 @@ import { Table } from 'lucide-react'
 import { Titular } from '@/models/Titular'
 
 interface TitularTableProps {
-  titular: Titular[]
+  titulares: Titular[]
 }
 
-export function TitularTable({ titular }: TitularTableProps) {
+export function TitularTable({ titulares }: TitularTableProps) {
   return (
     <>
       <Table className="mt-10 caption-top rounded border-2 bg-none">
@@ -36,7 +36,7 @@ export function TitularTable({ titular }: TitularTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody className="text-muted-foreground">
-          {titular.map((titular) => (
+          {titulares.map((titular) => (
             <TableRow key={titular.id}>
               <TableCell></TableCell>
               <TableCell>{titular.id}</TableCell>

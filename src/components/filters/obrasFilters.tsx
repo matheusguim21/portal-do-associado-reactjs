@@ -1,7 +1,13 @@
 import { TitularSearchModal } from '@components/modals/titularSearchModal'
 import { Button } from '@components/ui/button'
 import { Checkbox } from '@components/ui/checkbox'
-import { Form, FormField, FormItem } from '@components/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { Label } from '@components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group'
@@ -25,7 +31,7 @@ export function ObrasFilters({
       <span className="text-lg font-semibold">Filtros:</span>
       <form
         onSubmit={form.handleSubmit(handleFunction)}
-        className="flex w-[70rem] flex-col flex-wrap items-start gap-3"
+        className="flex w-[70rem] flex-col flex-wrap items-start justify-end gap-3"
       >
         <div className="flex flex-wrap items-end gap-5">
           <FormField
@@ -68,17 +74,20 @@ export function ObrasFilters({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="mt-5 flex flex-wrap items-end gap-3">
           <FormField
             control={form.control}
             name="titulo"
             render={({ field }) => (
               <FormItem>
-                <Input
-                  placeholder="Título da obra"
-                  className="h-8 w-52"
-                  {...field}
-                />
+                <FormLabel>Título</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Título da obra"
+                    className="h-8 w-52"
+                    {...field}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
@@ -87,11 +96,14 @@ export function ObrasFilters({
             name="codigoEcad"
             render={({ field }) => (
               <FormItem>
-                <Input
-                  placeholder="Código ECAD da Obra"
-                  className="h-8 w-44"
-                  {...field}
-                />
+                <FormLabel>Código ECAD </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="ECAD da Obra"
+                    className="h-8 w-44"
+                    {...field}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
@@ -135,6 +147,18 @@ export function ObrasFilters({
             )}
           /> */}
           <TitularSearchModal />
+          <Button
+            size={'xs'}
+            className="self-end"
+            variant={'destructive'}
+            type="reset"
+            onClick={() => {
+              console.log('Resetou')
+              form.reset()
+            }}
+          >
+            Limpar
+          </Button>
           <Button size={'xs'} type="submit" disabled={isFetching}>
             <Search className="mr-2 h-4 w-4" />
             {isFetching ? 'Buscando...' : 'Buscar'}

@@ -16,47 +16,47 @@ import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { ResponseObra } from '@/dtos/Obra'
 import { Obra } from '@/models/Obra'
-import { fetchObras, ResponseObra } from '@/services/ObrasService'
+import { fetchObras } from '@/services/ObrasService'
 import { useTitularStore } from '@/store/titularStore'
 import { api } from '@/utils/api'
 
 // Definição do esquema de validação usando Zod
-const ObraSchema = z
-  .object({
-    id: z.string().optional(),
-    titulo: z.string().optional(),
-    titularId: z.string().optional(),
-    titularCodigoEcad: z.string().optional(),
-    codigoEcad: z.string().optional(),
-    titularNome: z.string().optional(),
-    titularPseudonimo: z.string().optional(),
-    minhasObras: z.boolean().default(true),
-    nacional: z.string().default('S'),
-  })
-  .superRefine((data, ctx) => {
-    const values = [
-      data.id,
-      data.titulo,
-      data.titularId,
-      data.titularCodigoEcad,
-      data.codigoEcad,
-      data.titularNome,
-    ]
+const ObraSchema = z.object({
+  id: z.string().optional(),
+  titulo: z.string().optional(),
+  titularId: z.string().optional(),
+  titularCodigoEcad: z.string().optional(),
+  codigoEcad: z.string().optional(),
+  titularNome: z.string().optional(),
+  titularPseudonimo: z.string().optional(),
+  minhasObras: z.boolean().default(true),
+  nacional: z.string().default('S'),
+})
+// .superRefine((data, ctx) => {
+//   const values = [
+//     data.id,
+//     data.titulo,
+//     data.titularId,
+//     data.titularCodigoEcad,
+//     data.codigoEcad,
+//     data.titularNome,
+//   ]
 
-    // Verificação se há pelo menos dois campos preenchidos
-    const filledValues = values.filter((value) => value && value.trim() !== '')
-    data.minhasObras &&
-      (data.titularId = useTitularStore.getState().titular?.id.toString())
-    if (filledValues.length < 0 && !data.minhasObras) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['fieldsValidation'],
-        message:
-          'Você precisa preencher pelo menos dois campos para fazer a pesquisa se minhas obras estiver desmarcado',
-      })
-    }
-  })
+//   // Verificação se há pelo menos dois campos preenchidos
+//   const filledValues = values.filter((value) => value && value.trim() !== '')
+//   data.minhasObras &&
+//     (data.titularId = useTitularStore.getState().titular?.id.toString())
+//   if (filledValues.length < 0 && !data.minhasObras) {
+//     ctx.addIssue({
+//       code: 'custom',
+//       path: ['fieldsValidation'],
+//       message:
+//         'Você precisa preencher pelo menos dois campos para fazer a pesquisa se minhas obras estiver desmarcado',
+//     })
+//   }
+// })
 
 export type RequestObra = z.infer<typeof ObraSchema>
 
@@ -92,7 +92,8 @@ export function ConsultaDeObras() {
     ResponseObra,
     AxiosError
   >({
-    queryKey: ['pesquisa-obras', pageIndex], // Usar form.watch() para observar mudanças
+    enabled: false,
+    queryKey: ['pesquisa-obras', form.getValues(), pageIndex],
     queryFn: () => fetchObras(form.getValues(), pageIndex), // A função fetch será executada com os valores do formulário
     // Não buscar automaticamente
   })
@@ -110,7 +111,7 @@ export function ConsultaDeObras() {
       console.error(error)
     }
   }
-  const handlePaginate = (pageIndex: number) => {
+  const handlePaginate = async (pageIndex: number) => {
     setSearchParams((state) => {
       state.set('page', (pageIndex + 1).toString())
       return state
@@ -126,6 +127,18 @@ export function ConsultaDeObras() {
       })
     }
   }, [errors.fieldsValidation?.message])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await refetch() // Aguarda a conclusão do refetch
+        console.log('Dados carregados:', result.data)
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error)
+      }
+    }
+
+    fetchData() // Chama a função ao montar o componente
+  }, [refetch])
 
   return (
     <>
@@ -146,9 +159,9 @@ export function ConsultaDeObras() {
         <div className="rounded-md shadow-sm shadow-muted-foreground">
           {data != null ? (
             <ObrasTable obras={data.content} />
-          ) : (
+          ) : isFetching ? (
             <SkeletonTable />
-          )}
+          ) : null}
         </div>
         {data ? (
           <Pagination

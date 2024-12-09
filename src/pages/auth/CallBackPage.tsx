@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
-import { fetchUsuarioInfo } from '@/services/TitularService'
+import { titularService } from '@/services/TitularService'
 import { useTitularStore } from '@/store/titularStore'
 import { api } from '@/utils/api'
 
@@ -56,7 +56,8 @@ const CallbackPage: React.FC = () => {
           localStorage.setItem('access_token', access_token)
 
           api.defaults.headers.common.Authorization = `Bearer ${access_token}`
-          const titular = await fetchUsuarioInfo(access_token)
+          const titular =
+            await titularService.fetchUsuarioInfoFromToken(access_token)
           if (titular) {
             signIn(titular, access_token)
 
