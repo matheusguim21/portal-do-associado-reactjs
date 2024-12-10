@@ -6,6 +6,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -37,11 +38,11 @@ export function TitularFilters({
           <FormField
             control={form.control}
             name="nome"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nome do titular" />
+                  <Input placeholder="Nome do titular" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -49,11 +50,11 @@ export function TitularFilters({
           <FormField
             control={form.control}
             name="pseudonimo"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Pseudônimo</FormLabel>
                 <FormControl>
-                  <Input placeholder="Pseudônimo do titular" />
+                  <Input {...field} placeholder="Pseudônimo do titular" />
                 </FormControl>
               </FormItem>
             )}
@@ -61,11 +62,11 @@ export function TitularFilters({
           <FormField
             control={form.control}
             name="codigoECAD"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Codigo ECAD</FormLabel>
+                <FormLabel>Código ECAD</FormLabel>
                 <FormControl>
-                  <Input placeholder="Codigo ECAD do titular" />
+                  <Input {...field} placeholder="ECAD do titular" />
                 </FormControl>
               </FormItem>
             )}
@@ -73,11 +74,11 @@ export function TitularFilters({
           <FormField
             control={form.control}
             name="codigoSOC"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Código SOC</FormLabel>
                 <FormControl>
-                  <Input placeholder="Codigo SOC do titular" />
+                  <Input {...field} placeholder="SOC do titular" />
                 </FormControl>
               </FormItem>
             )}
@@ -85,11 +86,11 @@ export function TitularFilters({
           <FormField
             control={form.control}
             name="cpf"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>CPF/CNPJ</FormLabel>
                 <FormControl>
-                  <Input placeholder="CPF ou CNPJ do titular" />
+                  <Input {...field} placeholder="CPF ou CNPJ do titular" />
                 </FormControl>
               </FormItem>
             )}
@@ -97,11 +98,11 @@ export function TitularFilters({
           <FormField
             control={form.control}
             name="codigoCAE"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Codigo CAE</FormLabel>
                 <FormControl>
-                  <Input placeholder="Codigo CAE do titular" />
+                  <Input {...field} placeholder="Codigo CAE do titular" />
                 </FormControl>
               </FormItem>
             )}
@@ -113,8 +114,8 @@ export function TitularFilters({
             variant={'destructive'}
             type="reset"
             onClick={() => {
-              console.log('Resetou')
-              form.reset()
+              form.reset() // Chama o reset
+              console.log('Formulário foi resetado')
             }}
           >
             Limpar

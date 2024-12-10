@@ -19,6 +19,7 @@ import { z } from 'zod'
 import { ResponseObra } from '@/dtos/Obra'
 import { Obra } from '@/models/Obra'
 import { fetchObras } from '@/services/ObrasService'
+import useTitularSearch from '@/store/titularSearchStore'
 import { useTitularStore } from '@/store/titularStore'
 import { api } from '@/utils/api'
 
@@ -68,15 +69,17 @@ type CustomFormErrors = FieldErrors<RequestObra> & {
 }
 
 export function ConsultaDeObras() {
+  const { selectedTitular } = useTitularSearch()
+
   const form = useForm<RequestObra>({
     resolver: zodResolver(ObraSchema), // Integrando o schema de validação
     defaultValues: {
       titulo: '',
       codigoEcad: '',
       id: '',
-      titularCodigoEcad: '',
-      titularId: '',
-      titularNome: '',
+      titularCodigoEcad: selectedTitular?.codigoEcad.toString() ?? '',
+      titularId: selectedTitular?.id.toString() ?? '',
+      titularNome: selectedTitular?.nome ?? '',
       titularPseudonimo: '',
       minhasObras: true,
     },
@@ -88,23 +91,19 @@ export function ConsultaDeObras() {
     .transform((page) => page - 1)
     .parse(searchParams.get('page') ?? '1')
 
-  const { data, isError, isFetching, refetch } = useQuery<
+  const { data, isError, isFetching, refetch, isLoading } = useQuery<
     ResponseObra,
     AxiosError
   >({
-    enabled: false,
-    queryKey: ['pesquisa-obras', form.getValues(), pageIndex],
-    queryFn: () => fetchObras(form.getValues(), pageIndex), // A função fetch será executada com os valores do formulário
-    // Não buscar automaticamente
+    queryKey: ['pesquisa-obras', form.watch(), pageIndex], // Inclua form.watch() para refletir mudanças nos valores do formulário
+    queryFn: () => fetchObras(form.getValues(), pageIndex),
+    enabled: true, // A consulta só é acionada manualmente
   })
 
   const handleObrasSearch = async (formParams: RequestObra) => {
     try {
       console.log('Parâmetros: ', formParams)
-      setSearchParams((state) => {
-        state.set('page', String(0))
-        return state
-      })
+
       await refetch() // Refetch ao submeter o formulário
       console.log('Resultado da pesquisa', data)
     } catch (error) {
@@ -116,6 +115,8 @@ export function ConsultaDeObras() {
       state.set('page', (pageIndex + 1).toString())
       return state
     })
+    console.log(pageIndex)
+    await refetch()
   }
 
   const { errors } = form.formState as { errors: CustomFormErrors }
@@ -129,6 +130,10 @@ export function ConsultaDeObras() {
   }, [errors.fieldsValidation?.message])
   useEffect(() => {
     const fetchData = async () => {
+      setSearchParams((state) => {
+        state.set('page', String(0))
+        return state
+      })
       try {
         const result = await refetch() // Aguarda a conclusão do refetch
         console.log('Dados carregados:', result.data)
@@ -138,7 +143,7 @@ export function ConsultaDeObras() {
     }
 
     fetchData() // Chama a função ao montar o componente
-  }, [refetch])
+  }, [refetch, setSearchParams])
 
   return (
     <>
@@ -159,7 +164,7 @@ export function ConsultaDeObras() {
         <div className="rounded-md shadow-sm shadow-muted-foreground">
           {data != null ? (
             <ObrasTable obras={data.content} />
-          ) : isFetching ? (
+          ) : isFetching || isLoading ? (
             <SkeletonTable />
           ) : null}
         </div>

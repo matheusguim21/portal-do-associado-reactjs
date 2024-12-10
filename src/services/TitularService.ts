@@ -44,25 +44,31 @@ const fetchUsuarioInfoFromToken = async (token: string) => {
 }
 
 const searchTitular = {
-  queryFn: async (queryKey: { queryKey: [string, RequestTitular, number] }) => {
+  queryFn: async ({
+    queryKey,
+  }: {
+    queryKey: [string, RequestTitular, number]
+  }) => {
     const [_, formValues, pageIndex] = queryKey
 
     const queryParams = new URLSearchParams({
-      pseudonimo: formValues.pseudonimo,
-      nome: formValues.nome,
-      codigoECAD: formValues.codigoECAD,
-      codigoSOC: formValues.codigoSOC,
-      cpf: formValues.cpf,
-      codigoCAE: formValues.codigoCAE,
-      email: formValues.email,
+      pseudonimo: formValues.pseudonimo || '',
+      nome: formValues.nome || '',
+      codigoECAD: formValues.codigoECAD || '',
+      id: formValues.codigoSOC || '',
+      cpf: formValues.cpf || '',
+      codigoCAE: formValues.codigoCAE || '',
+      email: formValues.email || '',
+      page: pageIndex.toString(),
     })
 
     console.log('query Params do Titular service', queryParams)
 
-    const response = await api.get(
-      `sipa-documentacao/v1/titulares/${queryParams}`,
-    )
+    const uri = `sipa-documentacao/v1/titulares?pesquisa=CONTENDO&${queryParams}&size=10`
 
+    console.log('URI: ', uri)
+    const response = await api.get(uri)
+    console.log('Resposta: ', response.data)
     return response.data
   },
 }

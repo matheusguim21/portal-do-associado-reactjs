@@ -11,8 +11,8 @@ import {
 import { Input } from '@components/ui/input'
 import { Label } from '@components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group'
+import { Separator } from '@components/ui/separator'
 import { RequestFonograma } from '@pages/fonogramas/consulta'
-import { RequestObra } from '@pages/obras/consulta'
 import { Search } from 'lucide-react'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -34,21 +34,29 @@ export function FonogramasFilters({
         onSubmit={form.handleSubmit(handleFunction)}
         className="flex w-[70rem] flex-col flex-wrap items-start gap-3"
       >
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="flex h-10 flex-wrap items-center justify-center gap-3">
           <FormField
             control={form.control}
             name="meusFonogramas"
             render={({ field }) => (
-              <FormItem className="flex items-end justify-center gap-2">
-                <Label htmlFor="minhas-obras">Minhas Obras: </Label>
+              <FormItem className="-mt-2 flex items-end justify-center gap-2">
+                <Label htmlFor="meus-fonogramas" className="text-sm">
+                  Meus Fonogramas{' '}
+                </Label>
                 <Checkbox
-                  id="minhas-obras"
+                  className="-mt-5"
+                  id="meus-fonogramas"
                   onCheckedChange={field.onChange}
                   checked={field.value}
                 />
               </FormItem>
             )}
           />
+          <Separator
+            orientation="vertical"
+            className="h-7 w-0.5 bg-foreground"
+          />
+          <Label>Nacional</Label>
           <FormField
             control={form.control}
             name="nacional"
@@ -78,10 +86,10 @@ export function FonogramasFilters({
             name="titulo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Título da Obra</FormLabel>
+                <FormLabel>Título</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Título da obra"
+                    placeholder="Título do fonograma"
                     className="h-8 w-52 placeholder:text-xs"
                     {...field}
                   />

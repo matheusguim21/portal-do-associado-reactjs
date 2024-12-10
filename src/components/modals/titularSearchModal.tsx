@@ -1,3 +1,4 @@
+import { Pagination } from '@components/pagination'
 import { SkeletonTable } from '@components/skeletons/table-skeleton'
 import { TitularTable } from '@components/tables/TitularTables'
 import { Button } from '@components/ui/button'
@@ -15,39 +16,60 @@ import { useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 
 import { titularService } from '@/services/TitularService'
+import useTitularSearch from '@/store/titularSearchStore'
 
 import { TitularFilters } from '../filters/titularFilters'
 
-const TitularSchema = z.object({
-  pseudonimo: z.string().min(1),
-  nome: z.string().min(1),
-  codigoECAD: z.string().min(1),
-  codigoSOC: z.string().min(1),
-  cpf: z.string().min(1),
-  codigoCAE: z.string().min(1),
-  email: z.string().min(1),
-})
+const TitularSchema = z
+  .object({
+    pseudonimo: z.string().optional(),
+    nome: z.string().optional(),
+    codigoECAD: z.string().optional(),
+    codigoSOC: z.string().optional(),
+    cpf: z.string().optional(),
+    codigoCAE: z.string().optional(),
+    email: z.string().optional(),
+  })
+  .refine(
+    (data) =>
+      Object.values(data).some(
+        (value) => value !== undefined && value.trim() !== '',
+      ),
+    {
+      message: 'Pelo menos um campo deve ser preenchido.',
+      path: [], // Aplica a mensagem ao formulário inteiro
+    },
+  )
 export type RequestTitular = z.infer<typeof TitularSchema>
 
 export function TitularSearchModal() {
   const form = useForm<RequestTitular>({
     resolver: zodResolver(TitularSchema),
+    defaultValues: {
+      pseudonimo: '',
+      nome: '',
+      codigoECAD: '',
+      codigoSOC: '',
+      cpf: '',
+      codigoCAE: '',
+      email: '',
+    },
   })
-
-  const [searchParams, setSearchParams] = useSearchParams()
-
-  const pageIndex = z.coerce
-    .number()
-    .transform((page) => page - 1)
-    .parse(searchParams.get('page') ?? '1')
+  const { setModalPageIndex, modalPageIndex } = useTitularSearch()
 
   const { data, isFetching, isError, refetch, isLoading } = useQuery({
-    queryKey: ['pesquisa-titular', form.getValues(), pageIndex],
-    enabled: false,
+    queryKey: ['pesquisa-titular', form.getValues(), modalPageIndex],
+    enabled: true,
     ...titularService.searchTitular,
   })
   const handletitularSearch = async (values: RequestTitular) => {
     console.log(values)
+    await refetch()
+  }
+
+  const handlePaginate = async (pageIndex: number) => {
+    setModalPageIndex(pageIndex)
+    console.log('Página: ', modalPageIndex)
     await refetch()
   }
 
@@ -63,7 +85,7 @@ export function TitularSearchModal() {
           <span className="text-sm text-white">Selecionar Titular</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-[80vw] max-w-fit">
+      <DialogContent className="max-h-[90vh] min-w-[80vw] max-w-fit overflow-auto">
         <DialogHeader>
           <DialogTitle className="font-bold text-foreground">
             Buscar titular do fonograma
@@ -74,14 +96,28 @@ export function TitularSearchModal() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex min-w-[20rem] flex-row">
+        <div className="flex min-w-[20rem] flex-col">
           <TitularFilters
             form={form}
             handleFunction={handletitularSearch}
             isFetching={isFetching}
           />
+          {data?.content?.length > 0 ? (
+            <>
+              <TitularTable titulares={data.content} />
+              <Pagination
+                onPageChange={handlePaginate}
+                pageIndex={modalPageIndex} // Use o estado global
+                perPage={data?.size || 10}
+                totalCount={data?.totalElements || 0}
+              />
+            </>
+          ) : isFetching ? (
+            <SkeletonTable />
+          ) : (
+            <p>Nenhum titular encontrado.</p>
+          )}
         </div>
-        {data != null ? <TitularTable titulares={data.content} /> : null}
       </DialogContent>
     </Dialog>
   )
