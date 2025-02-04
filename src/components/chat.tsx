@@ -72,25 +72,21 @@ const Chat = () => {
             })
 
             try {
-              const parsedData = JSON.parse(data)
-
-              switch (eventType) {
-                case 'threadId':
-                  setThreadId(parsedData.threadId)
-                  localStorage.setItem('threadId', parsedData.threadId)
-                  break
-
-                case 'message':
+              if (eventType === 'threadId') {
+                // ✅ Se for uma Thread ID, salvar diretamente
+                setThreadId(data)
+                localStorage.setItem('threadId', data)
+              } else if (eventType === 'message') {
+                // ✅ Se for JSON válido, fazemos parse
+                try {
+                  const parsedData = JSON.parse(data)
                   setResponse((prev) => prev + parsedData.text)
-                  break
-
-                case 'error':
-                  console.error('Erro do servidor:', parsedData)
-                  setResponse((prev) => prev + `\nERRO: ${parsedData.message}`)
-                  break
-
-                default:
-                  console.warn('Evento desconhecido:', eventType)
+                } catch {
+                  // ✅ Se for texto puro, apenas exibir
+                  setResponse((prev) => prev + '\n' + data)
+                }
+              } else {
+                console.warn('Evento desconhecido:', eventType)
               }
             } catch (e) {
               console.error('Erro ao processar evento:', e)
@@ -100,6 +96,7 @@ const Chat = () => {
       }
 
       processStream()
+      setIsLoading(false)
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
         console.error('Erro:', error)
