@@ -1,3 +1,4 @@
+import Chat from '@components/chat'
 import { Helmet } from 'react-helmet-async'
 
 export function Dashboard() {
@@ -6,6 +7,7 @@ export function Dashboard() {
       <Helmet title="Dashboard" />
       <div>
         <h1> Dashboard</h1>
+        <Chat />
       </div>
     </>
   )

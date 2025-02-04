@@ -9,10 +9,10 @@ import {
   FormMessage,
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
-import { useForm, UseFormReturn } from 'react-hook-form'
-import { z } from 'zod'
+import { UseFormReturn } from 'react-hook-form'
+
+import { useCpfCnpjMask } from './CpfCnpjMask'
 
 interface TitularFiltersProps {
   form: UseFormReturn<RequestTitular>
@@ -25,12 +25,23 @@ export function TitularFilters({
   handleFunction,
   isFetching,
 }: TitularFiltersProps) {
+  const cpfCnpjMask = useCpfCnpjMask()
+  const removeMask = (value: string) => value.replace(/\D/g, '')
+  const onSubmit = (formData: RequestTitular) => {
+    // Limpa o CPF/CNPJ antes de enviar
+    const sanitizedData = {
+      ...formData,
+      cpf: removeMask(formData.cpf), // Remove a máscara do CPF/CNPJ
+    }
+    return handleFunction(sanitizedData)
+  }
+
   useEffect(() => {
     console.log('erros: ', form.formState.errors)
   }, [form.formState.errors])
   return (
     <Form {...form}>
-      <div className="flex flex-col justify-center gap-5">
+      <div className="mb-10 flex flex-col justify-center gap-5">
         <form
           onSubmit={form.handleSubmit(handleFunction)}
           className="flex flex-row items-center justify-center gap-4"
@@ -90,7 +101,17 @@ export function TitularFilters({
               <FormItem>
                 <FormLabel>CPF/CNPJ</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="CPF ou CNPJ do titular" />
+                  <Input
+                    {...field}
+                    maxLength={18}
+                    placeholder="CPF ou CNPJ do titular"
+                    value={cpfCnpjMask.value || form.watch('cpf') || ''} // Usa o valor do formulário como fonte inicial
+                    onChange={(e) => {
+                      cpfCnpjMask.onChange(e) // Atualiza a máscara
+                      form.setValue('cpf', e.target.value.replace(/\D/g, '')) // Atualiza o formulário com o valor sem máscara
+                    }}
+                    onBlur={field.onBlur} // Preserva o evento de blur
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -115,6 +136,7 @@ export function TitularFilters({
             type="reset"
             onClick={() => {
               form.reset() // Chama o reset
+              form.setValue('cpf', '')
               console.log('Formulário foi resetado')
             }}
           >
@@ -124,7 +146,7 @@ export function TitularFilters({
             className="self-end"
             variant={'default'}
             type="submit"
-            onClick={form.handleSubmit(handleFunction)}
+            onClick={form.handleSubmit(onSubmit)}
           >
             Pesquisar
           </Button>

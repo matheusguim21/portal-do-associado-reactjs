@@ -54,20 +54,24 @@ const searchTitular = {
     const queryParams = new URLSearchParams({
       pseudonimo: formValues.pseudonimo || '',
       nome: formValues.nome || '',
-      codigoECAD: formValues.codigoECAD || '',
+      codigoEcad: formValues.codigoECAD || '',
       id: formValues.codigoSOC || '',
-      cpf: formValues.cpf || '',
+      cpfCnpj: formValues.cpf || '',
       codigoCAE: formValues.codigoCAE || '',
       email: formValues.email || '',
-      page: pageIndex.toString(),
+      page: pageIndex.toString() || '0',
     })
 
     console.log('query Params do Titular service', queryParams)
 
-    const uri = `sipa-documentacao/v1/titulares?pesquisa=CONTENDO&${queryParams}&size=10`
+    const uri = `sipa-documentacao/v1/titulares?pesquisa=CONTENDO&${queryParams}`
 
     console.log('URI: ', uri)
-    const response = await api.get(uri)
+    const response = await api.get(uri, {
+      params: {
+        sort: 'nome, asc',
+      },
+    })
     console.log('Resposta: ', response.data)
     return response.data
   },

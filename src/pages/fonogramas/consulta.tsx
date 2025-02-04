@@ -96,7 +96,7 @@ export function ConsultaDeFonogramas() {
     AxiosError
   >({
     queryKey: ['pesquisa-fonogramas', pageIndex], // Usar form.watch() para observar mudanças
-    queryFn: () => fetchFonogramas(form.getValues(), pageIndex), // A função fetch será executada com os valores do formulário
+    // A função fetch será executada com os valores do formulário
     // Não buscar automaticamente
   })
 

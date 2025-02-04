@@ -80,7 +80,7 @@ const CallbackPage: React.FC = () => {
     fetchToken()
   }, [navigate, codeVerifier, signIn])
 
-  return <div>Seu Token é {token}...</div>
+  return <div>Autenticando...</div>
 }
 
 export default CallbackPage

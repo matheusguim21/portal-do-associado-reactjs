@@ -6,6 +6,8 @@ interface TitularSearch {
   modalPageIndex: number
   setModalPageIndex: (pageIndex: number) => void
   selectedTitular: Titular | null
+  auxSelectedTitular: Titular | null
+  setAuxSelectedTitular: (titular: Titular | null) => void
   setSelectedTitular: (titular: Titular | null) => void
 }
 
@@ -15,6 +17,10 @@ const useTitularSearch = create<TitularSearch>((set) => ({
   selectedTitular: null,
   setSelectedTitular: (titular: Titular | null) =>
     set({ selectedTitular: titular }),
+  auxSelectedTitular: null,
+  setAuxSelectedTitular: (titular: Titular | null) => {
+    set({ auxSelectedTitular: titular })
+  },
 }))
 
 export default useTitularSearch

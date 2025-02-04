@@ -9,10 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@radix-ui/react-dialog'
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { UserSearch } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSearchParams } from 'react-router-dom'
+import { useFetcher, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 
 import { titularService } from '@/services/TitularService'
@@ -55,14 +56,21 @@ export function TitularSearchModal() {
       email: '',
     },
   })
-  const { setModalPageIndex, modalPageIndex } = useTitularSearch()
 
+  const [isOpen, setIsOpen] = useState(false)
+
+  const { setModalPageIndex, modalPageIndex, selectedTitular } =
+    useTitularSearch()
+
+  const [filters, setFilters] = useState<RequestTitular | null>(null)
   const { data, isFetching, isError, refetch, isLoading } = useQuery({
-    queryKey: ['pesquisa-titular', form.getValues(), modalPageIndex],
-    enabled: true,
+    queryKey: ['pesquisa-titular', filters, modalPageIndex],
+    enabled: !!filters,
+    placeholderData: keepPreviousData,
     ...titularService.searchTitular,
   })
   const handletitularSearch = async (values: RequestTitular) => {
+    setFilters(form.getValues())
     console.log(values)
     await refetch()
   }
@@ -72,9 +80,12 @@ export function TitularSearchModal() {
     console.log('Página: ', modalPageIndex)
     await refetch()
   }
+  useEffect(() => {
+    setModalPageIndex(0)
+  }, [isOpen])
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           variant={'secondary'}
@@ -82,7 +93,9 @@ export function TitularSearchModal() {
           className="flex items-center justify-center gap-2"
         >
           <UserSearch size={20} className="mb-1" color="white" />
-          <span className="text-sm text-white">Selecionar Titular</span>
+          <span className="text-sm text-white">
+            {selectedTitular ? selectedTitular.nome : 'Selecionar Titular'}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] min-w-[80vw] max-w-fit overflow-auto">
@@ -102,9 +115,11 @@ export function TitularSearchModal() {
             handleFunction={handletitularSearch}
             isFetching={isFetching}
           />
-          {data?.content?.length > 0 ? (
+          {isFetching ? (
+            <SkeletonTable />
+          ) : data?.content?.length > 0 ? (
             <>
-              <TitularTable titulares={data.content} />
+              <TitularTable titulares={data.content} setIsOpen={setIsOpen} />
               <Pagination
                 onPageChange={handlePaginate}
                 pageIndex={modalPageIndex} // Use o estado global
@@ -112,8 +127,6 @@ export function TitularSearchModal() {
                 totalCount={data?.totalElements || 0}
               />
             </>
-          ) : isFetching ? (
-            <SkeletonTable />
           ) : (
             <p>Nenhum titular encontrado.</p>
           )}

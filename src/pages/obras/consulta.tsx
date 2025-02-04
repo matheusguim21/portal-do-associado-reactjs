@@ -6,10 +6,10 @@ import { Button } from '@components/ui/button'
 import { Form, FormField, FormItem } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { Search } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { FieldErrors, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
@@ -18,46 +18,34 @@ import { z } from 'zod'
 
 import { ResponseObra } from '@/dtos/Obra'
 import { Obra } from '@/models/Obra'
-import { fetchObras } from '@/services/ObrasService'
+import { obraService } from '@/services/ObrasService'
 import useTitularSearch from '@/store/titularSearchStore'
 import { useTitularStore } from '@/store/titularStore'
 import { api } from '@/utils/api'
 
 // Definição do esquema de validação usando Zod
-const ObraSchema = z.object({
-  id: z.string().optional(),
-  titulo: z.string().optional(),
-  titularId: z.string().optional(),
-  titularCodigoEcad: z.string().optional(),
-  codigoEcad: z.string().optional(),
-  titularNome: z.string().optional(),
-  titularPseudonimo: z.string().optional(),
-  minhasObras: z.boolean().default(true),
-  nacional: z.string().default('S'),
-})
-// .superRefine((data, ctx) => {
-//   const values = [
-//     data.id,
-//     data.titulo,
-//     data.titularId,
-//     data.titularCodigoEcad,
-//     data.codigoEcad,
-//     data.titularNome,
-//   ]
-
-//   // Verificação se há pelo menos dois campos preenchidos
-//   const filledValues = values.filter((value) => value && value.trim() !== '')
-//   data.minhasObras &&
-//     (data.titularId = useTitularStore.getState().titular?.id.toString())
-//   if (filledValues.length < 0 && !data.minhasObras) {
-//     ctx.addIssue({
-//       code: 'custom',
-//       path: ['fieldsValidation'],
-//       message:
-//         'Você precisa preencher pelo menos dois campos para fazer a pesquisa se minhas obras estiver desmarcado',
-//     })
-//   }
-// })
+const ObraSchema = z
+  .object({
+    id: z.string().optional(),
+    titulo: z.string().optional(),
+    titularId: z.string().optional(),
+    titularCodigoEcad: z.string().optional(),
+    codigoEcad: z.string().optional(),
+    titularNome: z.string().optional(),
+    titularPseudonimo: z.string().optional(),
+    minhasObras: z.boolean().default(true),
+    nacional: z.string().default('S'),
+  })
+  .refine(
+    (data) =>
+      Object.values(data).some(
+        (value) => value !== undefined && value.toString().trim() !== '',
+      ),
+    {
+      message: 'Pelo menos um campo deve ser preenchido.',
+      path: [],
+    },
+  )
 
 export type RequestObra = z.infer<typeof ObraSchema>
 
@@ -77,33 +65,35 @@ export function ConsultaDeObras() {
       titulo: '',
       codigoEcad: '',
       id: '',
-      titularCodigoEcad: selectedTitular?.codigoEcad.toString() ?? '',
-      titularId: selectedTitular?.id.toString() ?? '',
-      titularNome: selectedTitular?.nome ?? '',
+      titularCodigoEcad: '',
+      titularId: '',
+      titularNome: '',
       titularPseudonimo: '',
       minhasObras: true,
     },
   })
   const [searchParams, setSearchParams] = useSearchParams()
+  const [filters, setFilters] = useState<RequestObra | null>(null)
 
   const pageIndex = z.coerce
     .number()
     .transform((page) => page - 1)
     .parse(searchParams.get('page') ?? '1')
 
-  const { data, isError, isFetching, refetch, isLoading } = useQuery<
+  const { data, isError, isFetching, refetch, isLoading, isFetched } = useQuery<
     ResponseObra,
     AxiosError
   >({
-    queryKey: ['pesquisa-obras', form.watch(), pageIndex], // Inclua form.watch() para refletir mudanças nos valores do formulário
-    queryFn: () => fetchObras(form.getValues(), pageIndex),
-    enabled: true, // A consulta só é acionada manualmente
+    queryKey: ['pesquisa-obras', filters, pageIndex], // Inclua form.watch() para refletir mudanças nos valores do formulário
+
+    enabled: !!filters, // A consulta só é acionada manualmente
+    ...obraService.searchObra,
   })
 
   const handleObrasSearch = async (formParams: RequestObra) => {
     try {
       console.log('Parâmetros: ', formParams)
-
+      setFilters(form.getValues())
       await refetch() // Refetch ao submeter o formulário
       console.log('Resultado da pesquisa', data)
     } catch (error) {
@@ -111,11 +101,11 @@ export function ConsultaDeObras() {
     }
   }
   const handlePaginate = async (pageIndex: number) => {
+    const safePageIndex = Math.max(0, pageIndex) // Garante que não será menor que 0
     setSearchParams((state) => {
-      state.set('page', (pageIndex + 1).toString())
+      state.set('page', (safePageIndex + 1).toString())
       return state
     })
-    console.log(pageIndex)
     await refetch()
   }
 
@@ -131,7 +121,7 @@ export function ConsultaDeObras() {
   useEffect(() => {
     const fetchData = async () => {
       setSearchParams((state) => {
-        state.set('page', String(0))
+        state.set('page', String(1))
         return state
       })
       try {
@@ -143,7 +133,7 @@ export function ConsultaDeObras() {
     }
 
     fetchData() // Chama a função ao montar o componente
-  }, [refetch, setSearchParams])
+  }, [])
 
   return (
     <>
@@ -160,12 +150,13 @@ export function ConsultaDeObras() {
           form={form}
           handleFunction={handleObrasSearch}
           isFetching={isFetching}
+          isFetched={isFetched}
         />
         <div className="rounded-md shadow-sm shadow-muted-foreground">
-          {data != null ? (
-            <ObrasTable obras={data.content} />
-          ) : isFetching || isLoading ? (
+          {isFetching || isLoading ? (
             <SkeletonTable />
+          ) : data != null ? (
+            <ObrasTable obras={data.content} />
           ) : null}
         </div>
         {data ? (

@@ -13,11 +13,16 @@ import { Label } from '@components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group'
 import { RequestObra } from '@pages/obras/consulta'
 import { Search } from 'lucide-react'
+import { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form'
+
+import useTitularSearch from '@/store/titularSearchStore'
+import { useTitularStore } from '@/store/titularStore'
 
 interface ObrasFiltersProps {
   form: UseFormReturn<RequestObra>
   isFetching: boolean
+  isFetched: boolean
   handleFunction: (formParams: RequestObra) => Promise<void>
 }
 
@@ -25,7 +30,38 @@ export function ObrasFilters({
   form,
   handleFunction,
   isFetching,
+  isFetched,
 }: ObrasFiltersProps) {
+  const {
+    setSelectedTitular,
+    setAuxSelectedTitular,
+    auxSelectedTitular,
+    selectedTitular,
+  } = useTitularSearch()
+
+  const { titular } = useTitularStore()
+
+  const myWorksField = form.getValues().minhasObras
+
+  // useEffect(() => {
+  //   if (myWorksField) {
+  //     console.log('Minhas Obras? ', myWorksField)
+  //     setAuxSelectedTitular(selectedTitular)
+  //     setSelectedTitular(titular)
+  //   }
+  // }, [myWorksField])
+
+  useEffect(() => {
+    if (!myWorksField && auxSelectedTitular != null) {
+      setSelectedTitular(auxSelectedTitular)
+    }
+  }, [myWorksField])
+  useEffect(() => {
+    if (titular !== selectedTitular) {
+      form.setValue('minhasObras', false)
+    }
+  }, [selectedTitular])
+
   return (
     <Form {...form}>
       <span className="text-lg font-semibold">Filtros:</span>
@@ -107,45 +143,7 @@ export function ObrasFilters({
               </FormItem>
             )}
           />
-          {/* <FormField
-            control={form.control}
-            name="titularCodigoEcad"
-            render={({ field }) => (
-              <FormItem>
-                <Input
-                  placeholder="Código Ecad do Titular"
-                  className="h-8 w-44"
-                  {...field}
-                />
-              </FormItem>
-            )}
-          /> */}
-          {/* <FormField
-            control={form.control}
-            name="titularId"
-            render={({ field }) => (
-              <FormItem>
-                <Input
-                  placeholder="Código SOC do Titular"
-                  className="h-8 w-44"
-                  {...field}
-                />
-              </FormItem>
-            )}
-          /> */}
-          {/* <FormField
-            control={form.control}
-            name="titularPseudonimo"
-            render={({ field }) => (
-              <FormItem>
-                <Input
-                  placeholder="Pseudônimo"
-                  className="h-8 w-40"
-                  {...field}
-                />
-              </FormItem>
-            )}
-          /> */}
+
           <TitularSearchModal />
           <Button
             size={'xs'}
@@ -154,6 +152,7 @@ export function ObrasFilters({
             type="reset"
             onClick={() => {
               console.log('Resetou')
+              setSelectedTitular(null)
               form.reset()
             }}
           >
@@ -161,7 +160,7 @@ export function ObrasFilters({
           </Button>
           <Button size={'xs'} type="submit" disabled={isFetching}>
             <Search className="mr-2 h-4 w-4" />
-            {isFetching ? 'Buscando...' : 'Buscar'}
+            {isFetching && !isFetched ? 'Buscando...' : 'Buscar'}
           </Button>
         </div>
       </form>
