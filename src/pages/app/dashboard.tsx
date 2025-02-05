@@ -5,8 +5,8 @@ export function Dashboard() {
   return (
     <>
       <Helmet title="Dashboard" />
-      <div>
-        <h1> Dashboard</h1>
+      <div className="flex flex-col items-center">
+        <h1 className="self-start text-xl"> Dashboard</h1>
         <Chat />
       </div>
     </>

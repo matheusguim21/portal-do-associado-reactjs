@@ -1,3 +1,4 @@
+import { ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 const Chat = () => {
@@ -83,7 +84,7 @@ const Chat = () => {
                   setResponse((prev) => prev + parsedData.text)
                 } catch {
                   // ✅ Se for texto puro, apenas exibir
-                  setResponse((prev) => prev + '\n' + data)
+                  setResponse((prev) => prev + ' ' + data)
                 }
               } else {
                 console.warn('Evento desconhecido:', eventType)
@@ -114,46 +115,25 @@ const Chat = () => {
   }, [controller])
 
   return (
-    <div
-      style={{
-        maxWidth: '800px',
-        margin: '2rem auto',
-        padding: '1rem',
-        backgroundColor: '#f5f5f5',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      }}
-    >
-      <h2
-        style={{
-          textAlign: 'center',
-          color: '#333',
-          marginBottom: '1.5rem',
-        }}
-      >
-        Chat com Assistente IA
+    <div className="flex w-[80%] flex-col items-center gap-5 self-center rounded border bg-neutral-800 py-6">
+      <h2 className="mb-6 text-center text-2xl font-semibold text-gray-200">
+        Cadastro de Obras com IA
       </h2>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: '1rem',
-          marginBottom: '1rem',
-        }}
-      >
+      <div className="flex min-h-80 w-[calc(100%-10rem)] resize-y rounded-lg bg-neutral-700 p-3 text-neutral-200 drop-shadow-lg">
+        {response || 'Aguardando sua mensagem...'}
+      </div>
+
+      <div className="mb-4 flex min-h-32 w-[90%] resize-y flex-col gap-4 rounded-3xl bg-neutral-700 p-4">
         <textarea
           value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Digite sua mensagem..."
-          style={{
-            flex: 1,
-            padding: '0.8rem',
-            borderRadius: '4px',
-            border: '1px solid #ddd',
-            minHeight: '100px',
-            resize: 'vertical',
-            fontSize: '1rem',
+          onChange={(e) => {
+            console.log(e.target.value)
+
+            setPrompt(e.target.value)
           }}
+          placeholder="Digite sua mensagem..."
+          className="resize-none text-neutral-100 outline-none dark:bg-transparent dark:focus:border-none"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()
@@ -164,36 +144,15 @@ const Chat = () => {
 
         <button
           onClick={sendMessage}
-          disabled={isLoading}
-          style={{
-            padding: '0.8rem 1.5rem',
-            backgroundColor: isLoading ? '#999' : '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            alignSelf: 'flex-start',
-            transition: 'background-color 0.2s',
-          }}
+          disabled={isLoading || prompt === ''}
+          className="self-end rounded-full bg-neutral-600 shadow-lg transition-shadow hover:shadow-2xl disabled:bg-neutral-600"
         >
-          {isLoading ? 'Enviando...' : 'Enviar'}
+          {isLoading ? (
+            'Enviando...'
+          ) : (
+            <ArrowUp size={40} color={prompt === '' ? 'gray' : 'white'} />
+          )}
         </button>
-      </div>
-
-      <div
-        style={{
-          backgroundColor: 'white',
-          borderRadius: '4px',
-          padding: '1rem',
-          minHeight: '300px',
-          maxHeight: '60vh',
-          overflowY: 'auto',
-          whiteSpace: 'pre-wrap',
-          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)',
-        }}
-      >
-        {response || 'Aguardando sua mensagem...'}
       </div>
 
       {threadId && (
