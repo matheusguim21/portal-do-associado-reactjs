@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 const Chat = () => {
   const [prompt, setPrompt] = useState('')
-  const [response, setResponse] = useState('')
+  const [responses, setResponses] = useState<string[]>([]) // Alterado para array
   const [threadId, setThreadId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [controller, setController] = useState<AbortController | null>(null)
@@ -21,7 +21,7 @@ const Chat = () => {
     if (!prompt.trim()) return
 
     setIsLoading(true)
-    setResponse((prev) => prev + `\nVocê: ${prompt}`)
+    setResponses((prev) => [...prev, `Você: ${prompt}`]) // Adiciona mensagem do usuário
     setPrompt('')
 
     try {
@@ -45,6 +45,8 @@ const Chat = () => {
       let buffer = ''
 
       const processStream = async () => {
+        let isFirstChunk = true // Controla a primeira parte da resposta do bot
+
         while (true) {
           const { done, value } = await reader!.read()
 
@@ -55,7 +57,6 @@ const Chat = () => {
 
           buffer += decoder.decode(value, { stream: true })
 
-          // Processar todos os eventos completos no buffer
           while (buffer.includes('\n\n')) {
             const eventIndex = buffer.indexOf('\n\n')
             const eventData = buffer.slice(0, eventIndex)
@@ -68,23 +69,40 @@ const Chat = () => {
               if (line.startsWith('event: ')) {
                 eventType = line.replace('event: ', '').trim()
               } else if (line.startsWith('data: ')) {
-                data += line.replace('data: ', '').trim()
+                data += line.replace('data: ', '')
               }
             })
 
             try {
               if (eventType === 'threadId') {
-                // ✅ Se for uma Thread ID, salvar diretamente
                 setThreadId(data)
                 localStorage.setItem('threadId', data)
               } else if (eventType === 'message') {
-                // ✅ Se for JSON válido, fazemos parse
                 try {
                   const parsedData = JSON.parse(data)
-                  setResponse((prev) => prev + parsedData.text)
+                  const newText = parsedData.text
+
+                  setResponses((prev) => {
+                    if (isFirstChunk) {
+                      isFirstChunk = false
+                      return [...prev, `SocBot: ${newText}`] // Nova mensagem do bot
+                    } else {
+                      const newResponses = [...prev]
+                      newResponses[newResponses.length - 1] += newText // Atualiza última mensagem
+                      return newResponses
+                    }
+                  })
                 } catch {
-                  // ✅ Se for texto puro, apenas exibir
-                  setResponse((prev) => prev + ' ' + data)
+                  setResponses((prev) => {
+                    if (isFirstChunk) {
+                      isFirstChunk = false
+                      return [...prev, `SocBot: ${data}`]
+                    } else {
+                      const newResponses = [...prev]
+                      newResponses[newResponses.length - 1] += data
+                      return newResponses
+                    }
+                  })
                 }
               } else {
                 console.warn('Evento desconhecido:', eventType)
@@ -101,7 +119,7 @@ const Chat = () => {
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
         console.error('Erro:', error)
-        setResponse((prev) => prev + `\nERRO: ${(error as Error).message}`)
+        setResponses((prev) => [...prev, `ERRO: ${(error as Error).message}`]) // Nova mensagem de erro
       }
       setIsLoading(false)
     }
@@ -120,18 +138,20 @@ const Chat = () => {
         Cadastro de Obras com IA
       </h2>
 
-      <div className="flex min-h-80 w-[calc(100%-10rem)] resize-y rounded-lg bg-neutral-700 p-3 text-neutral-200 drop-shadow-lg">
-        {response || 'Aguardando sua mensagem...'}
+      <div className="flex min-h-80 w-[calc(100%-10rem)] resize-y flex-col rounded-lg bg-neutral-700 p-3 text-neutral-200 drop-shadow-lg">
+        {responses.length === 0
+          ? 'Aguardando sua mensagem...'
+          : responses.map((text, index) => (
+              <p key={index} className="mb-2 whitespace-pre-wrap">
+                {text}
+              </p> // Cada mensagem em um <p>
+            ))}
       </div>
 
       <div className="mb-4 flex min-h-32 w-[90%] resize-y flex-col gap-4 rounded-3xl bg-neutral-700 p-4">
         <textarea
           value={prompt}
-          onChange={(e) => {
-            console.log(e.target.value)
-
-            setPrompt(e.target.value)
-          }}
+          onChange={(e) => setPrompt(e.target.value)}
           placeholder="Digite sua mensagem..."
           className="resize-none text-neutral-100 outline-none dark:bg-transparent dark:focus:border-none"
           onKeyDown={(e) => {
@@ -156,14 +176,7 @@ const Chat = () => {
       </div>
 
       {threadId && (
-        <div
-          style={{
-            marginTop: '1rem',
-            fontSize: '0.9rem',
-            color: '#666',
-            textAlign: 'center',
-          }}
-        >
+        <div className="mt-4 text-center text-sm text-neutral-400">
           ID da Conversa: {threadId}
         </div>
       )}
