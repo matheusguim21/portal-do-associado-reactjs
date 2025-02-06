@@ -15,7 +15,9 @@ import { useTheme } from '@/theme/theme-provider'
 import { ThemeToggle } from '@/theme/theme-toggle'
 
 import { AccountMenu } from './account-menu'
+import { HeaderNavigationMenu } from './header-navigation-menu'
 import { NavLink } from './nav-link'
+import { NavigationMenu } from './ui/navigation-menu'
 
 export function Header() {
   const theme = useTheme()
@@ -28,7 +30,8 @@ export function Header() {
           className="w-40"
         />
         <Separator orientation="vertical" className="h-6" />
-        <nav className="flex items-center space-x-4 lg:space-x-6">
+        <HeaderNavigationMenu />
+        {/* <nav className="flex items-center space-x-4 lg:space-x-6">
           <NavLink to={'/'}>
             <Home className="h-6 w-6" />
             Dashboard
@@ -45,7 +48,7 @@ export function Header() {
             <CircleDollarSign className="h-6 w-6" />
             Financeiro
           </NavLink>
-        </nav>
+        </nav> */}
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
           <AccountMenu />

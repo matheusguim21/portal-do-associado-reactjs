@@ -23,16 +23,18 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    "baseUrl": ".",
+    "baseUrl": "src/",
     "paths": {
-      "@assets/*": ["./src/assets/*"],
-      "@theme/*": ["./src/theme/*"],
-      "@components/*": ["./src/components/*"],
-      "@lib/*": ["./src/lib/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@/*": ["./src/*"],
-      "@utils/*": ["./src/utils/*"],
-    }
+      "@/*": ["/*"],
+      "@assets/*": ["assets/*"],
+      "@theme/*": ["theme/*"],
+      "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"],
+      "@store/*": ["store/*"],
+      "@services/*":["services/*"]
+    },
   },
   "include": ["src"]
 }

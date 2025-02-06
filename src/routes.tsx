@@ -20,12 +20,18 @@ export const router = createBrowserRouter([
         path: '/',
         element: <Dashboard />,
       },
+    ],
+  },
+  {
+    path: '/consulta',
+    element: <Applayout />,
+    children: [
       {
-        path: '/obras',
+        path: 'obras',
         element: <ConsultaDeObras />,
       },
       {
-        path: '/fonogramas',
+        path: 'fonogramas',
         element: <ConsultaDeFonogramas />,
       },
     ],
@@ -36,20 +42,20 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'login',
-        element: <SignIn />,
-      },
-      {
-        path: 'cadastro',
-        element: <SignUp />,
-      },
-      {
-        path: 'esqueceu-senha',
-        element: <ForgotPassword />,
-      },
-      {
-        path: 'oauth-login',
         element: <OAuthLogin />,
       },
+      // {
+      //   path: 'cadastro',
+      //   element: <SignUp />,
+      // },
+      // {
+      //   path: 'esqueceu-senha',
+      //   element: <ForgotPassword />,
+      // },
+      // {
+      //   path: 'oauth-login',
+      //   element: <OAuthLogin />,
+      // },
       {
         path: 'callback',
         element: <CallbackPage />,
