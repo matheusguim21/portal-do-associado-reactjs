@@ -1,4 +1,4 @@
-import '@/global.css'
+import './global.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { colors } from '@theme/colors'

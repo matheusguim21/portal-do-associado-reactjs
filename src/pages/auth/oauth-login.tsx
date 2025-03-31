@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
-import { useTitularStore } from '@/store/titularStore'
+import { Button } from '@components/ui/button'
+import { useTitularStore } from '@store/titularStore'
 type RequestError = {
   message: string
 }

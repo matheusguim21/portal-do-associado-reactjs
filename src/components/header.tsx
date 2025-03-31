@@ -9,10 +9,10 @@ import {
   UtensilsCrossed,
 } from 'lucide-react'
 
-import LogoSocinproBranca from '@/assets/logos/logo-sem-slogan-branca.png'
-import LogoSocinproPreta from '@/assets/logos/logo-sem-slogan-preta.png'
-import { useTheme } from '@/theme/theme-provider'
-import { ThemeToggle } from '@/theme/theme-toggle'
+import LogoSocinproBranca from '@assets/logos/logo-sem-slogan-branca.png'
+import LogoSocinproPreta from '@assets/logos/logo-sem-slogan-preta.png'
+import { useTheme } from '@theme/theme-provider'
+import { ThemeToggle } from '@theme/theme-toggle'
 
 import { AccountMenu } from './account-menu'
 import { HeaderNavigationMenu } from './header-navigation-menu'
@@ -31,24 +31,7 @@ export function Header() {
         />
         <Separator orientation="vertical" className="h-6" />
         <HeaderNavigationMenu />
-        {/* <nav className="flex items-center space-x-4 lg:space-x-6">
-          <NavLink to={'/'}>
-            <Home className="h-6 w-6" />
-            Dashboard
-          </NavLink>
-          <NavLink to={'/obras'}>
-            <FileMusic className="h-6 w-6" />
-            Obras
-          </NavLink>
-          <NavLink to={'/fonogramas'}>
-            <AudioLines className="h-6 w-6" />
-            Fonogramas
-          </NavLink>
-          <NavLink to={'/financeiro'}>
-            <CircleDollarSign className="h-6 w-6" />
-            Financeiro
-          </NavLink>
-        </nav> */}
+      
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
           <AccountMenu />

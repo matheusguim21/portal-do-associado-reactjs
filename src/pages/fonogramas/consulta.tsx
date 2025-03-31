@@ -15,13 +15,13 @@ import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z, ZodError } from 'zod'
 
-import { Fonograma } from '@/models/Fonograma'
+import { Fonograma } from '@models/Fonograma'
 import {
   fetchFonogramas,
   ResponseFonograma,
-} from '@/services/fonogramasService'
-import { useTitularStore } from '@/store/titularStore'
-import { api } from '@/utils/api'
+} from '@services/fonogramasService'
+import { useTitularStore } from '@store/titularStore'
+import { api } from '@utils/api'
 
 // Definição do esquema de validação usando Zod
 const FonogramaSchema = z

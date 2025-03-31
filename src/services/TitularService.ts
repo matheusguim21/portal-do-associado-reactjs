@@ -2,9 +2,9 @@ import { RequestTitular } from '@components/modals/titularSearchModal'
 import { jwtDecode } from 'jwt-decode'
 import { string } from 'zod'
 
-import { Titular } from '@/models/Titular'
-import { Token } from '@/models/Token'
-import { api } from '@/utils/api'
+import { Titular } from '@models/Titular'
+import { Token } from '@models/Token'
+import { api } from '@utils/api'
 
 type SearchTitularProps = {
   queryKey: string

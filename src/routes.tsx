@@ -10,6 +10,7 @@ import { Dashboard } from './pages/app/dashboard'
 import { SignIn } from './pages/auth/sign-in'
 import { SignUp } from './pages/auth/sign-up'
 import { ConsultaDeObras } from './pages/obras/consulta'
+import {Financeiro} from '@pages/financeiro'
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,16 @@ export const router = createBrowserRouter([
       },
     ],
   },
+{
+  path:"financeiro",
+  element:<Applayout/>,
+  children:[
+    {
+      path:"",
+      element:<Financeiro/>
+    }
+  ]
+},
   {
     path: '/auth',
     element: <Authlayout />,

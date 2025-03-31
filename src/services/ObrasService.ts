@@ -1,9 +1,9 @@
 import { RequestObra } from '@pages/obras/consulta'
 
-import { ResponseObra } from '@/dtos/Obra'
-import useTitularSearch from '@/store/titularSearchStore'
-import { useTitularStore } from '@/store/titularStore'
-import { api } from '@/utils/api'
+import { ResponseObra } from '@dtos/Obra'
+import useTitularSearch from '@store/titularSearchStore'
+import { useTitularStore } from '@store/titularStore'
+import { api } from '@utils/api'
 
 type SearchObraProps = {
   queryKey: [string, RequestObra, number]

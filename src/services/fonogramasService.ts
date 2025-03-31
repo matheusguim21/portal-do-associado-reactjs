@@ -1,9 +1,9 @@
 import { RequestObra } from '@pages/obras/consulta'
 
-import { Fonograma } from '@/models/Fonograma'
-import { Obra } from '@/models/Obra'
-import { useTitularStore } from '@/store/titularStore'
-import { api } from '@/utils/api'
+import { Fonograma } from '@models/Fonograma'
+import { Obra } from '@models/Obra'
+import { useTitularStore } from '@store/titularStore'
+import { api } from '@utils/api'
 
 export type ResponseFonograma = {
   content: Fonograma[]

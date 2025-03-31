@@ -18,7 +18,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { api } from '@/utils/api'
+import { api } from '@utils/api'
 
 const forgotPasswordSchema = z.object({
   username: z

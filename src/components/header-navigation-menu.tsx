@@ -1,4 +1,4 @@
-// import { Icons } from "@/components/icons"
+// import { Icons } from "@components/icons"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -14,6 +14,7 @@ import * as React from 'react'
 
 import { NavLink } from './nav-link'
 import { Separator } from './ui/separator'
+import { Link } from 'react-router-dom'
 
 const components = [
   {
@@ -96,15 +97,15 @@ export function HeaderNavigationMenu() {
                   </p>
                 </NavigationMenuLink>
               </li>
-              {/* <ListItem href="/docs/installation" title="Installation">
-                How to install dependencies and structure your app.
-              </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
-                Styles for headings, paragraphs, lists...etc
-              </ListItem> */}
+            
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+        <NavigationMenuItem>
+                  <Link to={"/financeiro"}>
+                    <span>Financeiro</span>
+                  </Link>
+                </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   )

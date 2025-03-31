@@ -1,12 +1,12 @@
-import { formToJSON } from 'axios'
+import axios, { formToJSON } from 'axios'
 import base64 from 'base-64'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
-import { titularService } from '@/services/TitularService'
-import { useTitularStore } from '@/store/titularStore'
-import { api } from '@/utils/api'
+import { titularService } from '@services/TitularService'
+import { useTitularStore } from '@store/titularStore'
+import { api } from '@utils/api'
 
 const CallbackPage: React.FC = () => {
   const navigate = useNavigate()
@@ -44,7 +44,7 @@ const CallbackPage: React.FC = () => {
           form.append('code_verifier', codeVerifier)
           console.log('Form: ', formToJSON(form))
 
-          const response = await api.post(tokenEndpoint, form, {
+          const response = await axios.post(tokenEndpoint, form, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Basic ${credentials}`,
