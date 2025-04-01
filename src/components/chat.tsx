@@ -160,12 +160,12 @@ const Chat = () => {
   }, [controller])
 
   return (
-    <div className="flex w-[80%] flex-col items-center gap-5 self-center rounded border bg-neutral-800 py-2">
-      <h2 className="mb-3 text-center text-2xl font-semibold text-gray-200">
+    <div className="flex w-[80%] flex-col items-center gap-5 self-center rounded-xl border bg-primary py-2">
+      <h2 className="mb-3 text-center text-2xl font-semibold text-white">
         Cadastro de Obras com IA
       </h2>
 
-      <div className="custom-scrollbar flex max-h-[50vh] min-h-80 w-[calc(100%-10rem)] resize-none flex-col overflow-auto rounded-lg bg-neutral-700 p-3 text-neutral-200 drop-shadow-lg">
+      <div className="custom-scrollbar flex max-h-[50vh] min-h-80 w-[calc(100%-10rem)] resize-none flex-col overflow-auto rounded-lg bg-background p-3 text-foreground drop-shadow-lg">
         {messages.length === 0
           ? 'Aguardando sua mensagem...'
           : messages.map((msg, i) =>
@@ -182,7 +182,7 @@ const Chat = () => {
             )}
       </div>
 
-      <div className="mb-4 flex min-h-32 w-[90%] resize-y flex-col gap-4 rounded-3xl bg-neutral-700 p-4">
+      <div className="mb-4 flex min-h-32 w-[90%] resize-y flex-col gap-4 rounded-3xl bg-background p-4">
         <textarea
           value={prompt}
           onChange={(e) => {
@@ -191,7 +191,7 @@ const Chat = () => {
             setPrompt(e.target.value)
           }}
           placeholder="Digite sua mensagem..."
-          className="resize-none text-neutral-100 outline-none dark:bg-transparent dark:focus:border-none"
+          className="resize-none text-foreground bg-transparent outline-none dark:bg-transparent dark:focus:border-none"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()

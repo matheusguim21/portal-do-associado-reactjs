@@ -102,9 +102,9 @@ export function HeaderNavigationMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-                  <Link to={"/financeiro"}>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()} href={"/financeiro"}>
                     <span>Financeiro</span>
-                  </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

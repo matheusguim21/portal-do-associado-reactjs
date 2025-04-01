@@ -22,10 +22,10 @@ import { NavigationMenu } from './ui/navigation-menu'
 export function Header() {
   const theme = useTheme()
   return (
-    <div className="border-b">
+    <div className="border-b bg-primary">
       <div className="flex h-16 items-center gap-6 px-6">
         <img
-          src={theme.theme === 'light' ? LogoSocinproPreta : LogoSocinproBranca}
+          src={theme.theme === 'light' ? LogoSocinproBranca : LogoSocinproPreta  }
           alt="logo da socinpro"
           className="w-40"
         />
