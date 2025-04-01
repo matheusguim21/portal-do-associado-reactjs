@@ -19,7 +19,7 @@ import { z } from 'zod'
 import { titularService } from '@/services/TitularService'
 import useTitularSearch from '@/store/titularSearchStore'
 
-import { TitularFilters } from '../filters/titularFilters'
+import { TitularFilters } from '../forms/titularFilters'
 
 const TitularSchema = z
   .object({

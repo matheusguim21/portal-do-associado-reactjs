@@ -11,7 +11,7 @@
   "compilerOptions": {
     "baseUrl": "src/",
     "paths": {
-      "@*": ["/*"],
+      "@*": ["./*"],
       "@assets/*": ["assets/*"],
       "@theme/*": ["theme/*"],
       "@models/*": ["models/*"],

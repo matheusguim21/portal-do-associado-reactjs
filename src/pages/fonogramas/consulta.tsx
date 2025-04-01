@@ -1,4 +1,4 @@
-import { FonogramasFilters } from '@components/filters/FonogramasFilters'
+import { FonogramasFilters } from '@components/forms/FonogramasFilters'
 import { Pagination } from '@components/pagination'
 import { FonogramasTable } from '@components/tables/FonogramasTables'
 import { Button } from '@components/ui/button'

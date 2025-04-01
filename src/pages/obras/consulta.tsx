@@ -1,4 +1,4 @@
-import { ObrasFilters } from '@components/filters/obrasFilters'
+import { ObrasFilters } from '@components/forms/obrasFilters'
 import { Pagination } from '@components/pagination'
 import { SkeletonTable } from '@components/skeletons/table-skeleton'
 import { ObrasTable } from '@components/tables/ObrasTables'

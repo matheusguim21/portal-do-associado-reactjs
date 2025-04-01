@@ -28,7 +28,7 @@ export function FonogramasFilters({
   isFetching,
 }: FonogramasFiltersProps) {
   return (
-    <Form {...form}>
+    <Form  {...form}>
       <span className="text-lg font-semibold">Filtros:</span>
       <form
         onSubmit={form.handleSubmit(handleFunction)}

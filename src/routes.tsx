@@ -10,7 +10,7 @@ import { Dashboard } from './pages/app/dashboard'
 import { SignIn } from './pages/auth/sign-in'
 import { SignUp } from './pages/auth/sign-up'
 import { ConsultaDeObras } from './pages/obras/consulta'
-import {Financeiro} from '@pages/financeiro'
+import {Financeiro} from '@/pages/financeiro/payment'
 
 export const router = createBrowserRouter([
   {

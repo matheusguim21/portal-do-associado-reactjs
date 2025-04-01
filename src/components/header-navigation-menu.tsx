@@ -59,7 +59,7 @@ export function HeaderNavigationMenu() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink href='/' className={navigationMenuTriggerStyle()}>
             <LayoutDashboard className="h-6 w-6" />
             <p className="ml-2 text-lg">Dashboard</p>
           </NavigationMenuLink>
