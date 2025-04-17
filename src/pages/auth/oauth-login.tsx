@@ -70,8 +70,8 @@ export function OAuthLogin() {
     const authEndpoint =
       'https://staging-auth.socinpro.org.br/sipa-auth/oauth2/authorize'
     const responseType = 'code'
-
-    const url = `${authEndpoint}?response_type=${responseType}&client_id=${clientId}&state=${authState.state}&code_challenge=${authState.codeChallenge}&code_challenge_method=S256&scope=READ+WRITE&redirect_uri=${encodeURIComponent(redirectUri)}`
+    
+    const url = `${authEndpoint}?response_type=${responseType}&client_id=${clientId}&state=${authState.state}&code_challenge=${authState.codeChallenge}&code_challenge_method=S256&scope=READ+WRITE&redirect_uri=${(redirectUri)}`
     console.log('Authorization URL:', url)
 
     window.location.href = url

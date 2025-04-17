@@ -1,6 +1,7 @@
+import { Titular } from '@/models/Titular'
 import { api } from '@utils/api'
 // Substitua pelos seus modelos reais
-import { Titular } from 'src/models/Titular'
+
 import { create } from 'zustand'
 
 type TitularStore = {

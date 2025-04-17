@@ -12,9 +12,7 @@ import { cn } from '@lib/utils'
 import { AudioLines, FileMusic, LayoutDashboard, Search } from 'lucide-react'
 import * as React from 'react'
 
-import { NavLink } from './nav-link'
 import { Separator } from './ui/separator'
-import { Link } from 'react-router-dom'
 
 const components = [
   {
@@ -112,7 +110,7 @@ export function HeaderNavigationMenu() {
 }
 
 const ListItem = React.forwardRef(
-  ({ className, title, children, ...props }, ref) => {
+  ({ className, title, children, ...props }:any, ref) => {
     return (
       <li>
         <NavigationMenuLink asChild>

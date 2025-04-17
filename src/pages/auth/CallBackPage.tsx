@@ -17,6 +17,7 @@ const CallbackPage: React.FC = () => {
     const fetchToken = async () => {
       const params = new URLSearchParams(window.location.search)
       const authorizationCode = params.get('code')
+      const logout = params.get('logout')
       const state = params.get('state')
 
       if (authorizationCode && state) {
@@ -71,7 +72,16 @@ const CallbackPage: React.FC = () => {
           console.error('Erro ao buscar o access token:', error)
           toast.error(error.response?.data || 'Erro ao buscar o access token')
         }
-      } else {
+      }
+      else if(logout){
+        console.log("Logout: ", logout)
+        setInterval(()=>{
+window.location.href = 'http://127.0.0.1:3000/auth/login'
+        }, 2000)
+        
+
+      } 
+      else {
         console.error('Código de autorização ou estado está faltando')
         toast.error('Código de autorização ou estado está faltando')
       }
